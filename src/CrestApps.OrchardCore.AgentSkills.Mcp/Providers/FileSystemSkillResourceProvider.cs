@@ -39,9 +39,9 @@ public sealed class FileSystemSkillResourceProvider
             var skillFile = Path.Combine(skillDir, "skill.yaml");
             if (File.Exists(skillFile))
             {
-                var content = File.ReadAllText(skillFile);
+                var capturedSkillFile = skillFile;
                 var resource = McpServerResource.Create(
-                    () => content,
+                    () => File.ReadAllText(capturedSkillFile),
                     new McpServerResourceCreateOptions
                     {
                         Name = $"{skillName}/skill.yaml",
@@ -59,12 +59,12 @@ public sealed class FileSystemSkillResourceProvider
                 continue;
             }
 
-            foreach (var exampleFile in Directory.EnumerateFiles(examplesDir))
+            foreach (var exampleFile in Directory.EnumerateFiles(examplesDir, "*.md"))
             {
                 var fileName = Path.GetFileName(exampleFile);
-                var content = File.ReadAllText(exampleFile);
+                var capturedExampleFile = exampleFile;
                 var resource = McpServerResource.Create(
-                    () => content,
+                    () => File.ReadAllText(capturedExampleFile),
                     new McpServerResourceCreateOptions
                     {
                         Name = $"{skillName}/examples/{fileName}",

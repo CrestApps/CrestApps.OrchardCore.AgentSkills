@@ -41,9 +41,9 @@ public sealed class FileSystemSkillPromptProvider
                 continue;
             }
 
-            var content = File.ReadAllText(promptsFile);
+            var capturedPath = promptsFile;
             var prompt = McpServerPrompt.Create(
-                () => content,
+                () => File.ReadAllText(capturedPath),
                 new McpServerPromptCreateOptions
                 {
                     Name = skillName,
