@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="contentFiles\any\any\.agents\skills\**\*"
+    <Content Include="..\skills\.agents\skills\**\*"
              Pack="true"
              PackagePath="contentFiles\any\any\.agents\skills"
              BuildAction="Content"
