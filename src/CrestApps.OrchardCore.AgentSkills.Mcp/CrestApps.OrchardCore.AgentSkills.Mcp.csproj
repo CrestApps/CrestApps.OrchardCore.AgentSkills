@@ -19,14 +19,11 @@
 
   <ItemGroup>
     <PackageReference Include="ModelContextProtocol" Version="0.8.0-preview.1" />
+    <PackageReference Include="OrchardCore.FileStorage.FileSystem" Version="2.2.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\skills\.agents\skills\**\*"
-             Pack="true"
-             PackagePath="contentFiles\any\any\.agents\skills"
-             BuildAction="Content"
-             CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\skills\.agents\skills\**\*" Pack="true" PackagePath="contentFiles\any\any\.agents\skills" BuildAction="Content" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

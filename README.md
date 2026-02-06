@@ -5,7 +5,7 @@ Distributes shared **AI agent instruction and guardrail files** for Orchard Core
 | Package | Purpose |
 |---|---|
 | [`CrestApps.OrchardCore.AgentSkills`](src/CrestApps.OrchardCore.AgentSkills/) | **Dev / design-time** — copies skills into solution-root `.agents/skills` for local AI authoring tools (GitHub Copilot, Cursor, Cline) |
-| [`CrestApps.OrchardCore.AgentSkills.Mcp`](src/CrestApps.OrchardCore.AgentSkills.Mcp/) | **Runtime / MCP server** — loads skills at runtime and exposes them as MCP prompts and resources |
+| [`CrestApps.OrchardCore.AgentSkills.Mcp`](src/CrestApps.OrchardCore.AgentSkills.Mcp/) | **Runtime / MCP server** — loads skills at runtime via OrchardCore `FileSystemStore` and exposes them as MCP prompts and resources |
 
 ## Quick Start
 
@@ -44,8 +44,8 @@ builder.Services.AddMcpServer(mcp =>
 });
 ```
 
-- Loads skills at runtime from the package output directory.
-- Registers prompts and resources via the [MCP C# SDK](https://github.com/modelcontextprotocol/csharp-sdk).
+- Loads skills at runtime via OrchardCore `FileSystemStore`.
+- `IMcpResourceFileStore`, `FileSystemSkillPromptProvider`, and `FileSystemSkillResourceProvider` registered as **singletons** — no repeated file reads.
 - No file copying to solution.
 
 ### Full Experience
@@ -81,6 +81,7 @@ src/
 └─ CrestApps.OrchardCore.AgentSkills.Mcp/        ← MCP runtime package
    ├─ Extensions/                                ← MCP extension methods
    ├─ Providers/                                 ← Prompt & resource providers
+   ├─ Services/                                  ← IMcpResourceFileStore & McpSkillFileStore
    ├─ README.md
    └─ CrestApps.OrchardCore.AgentSkills.Mcp.csproj
 ```

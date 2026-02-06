@@ -1,4 +1,5 @@
 using CrestApps.OrchardCore.AgentSkills.Mcp.Providers;
+using CrestApps.OrchardCore.AgentSkills.Mcp.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CrestApps.OrchardCore.AgentSkills.Mcp.Extensions;
@@ -13,6 +14,8 @@ public static class OrchardCoreSkillMcpExtensions
     /// <summary>
     /// Registers Orchard Core agent skills as MCP prompts and resources.
     /// Skills are loaded at runtime from the NuGet package output directory.
+    /// The <see cref="IMcpResourceFileStore"/>, <see cref="FileSystemSkillPromptProvider"/>,
+    /// and <see cref="FileSystemSkillResourceProvider"/> are registered as singletons.
     /// </summary>
     /// <param name="builder">The MCP server builder.</param>
     /// <returns>The builder for chaining.</returns>
@@ -23,7 +26,7 @@ public static class OrchardCoreSkillMcpExtensions
 
     /// <summary>
     /// Registers Orchard Core agent skills as MCP prompts and resources
-    /// with optional configuration.
+    /// with optional configuration. All services are registered as singletons.
     /// </summary>
     /// <param name="builder">The MCP server builder.</param>
     /// <param name="configure">A delegate to configure skill options.</param>
@@ -38,21 +41,16 @@ public static class OrchardCoreSkillMcpExtensions
         var options = new OrchardCoreSkillOptions();
         configure(options);
 
-        var skillsPath = options.Path ?? Path.Combine(AppContext.BaseDirectory, DefaultSkillsRelativePath);
+        var skillsPath = options.Path
+            ?? Path.Combine(AppContext.BaseDirectory, DefaultSkillsRelativePath);
 
-        var promptProvider = new FileSystemSkillPromptProvider(skillsPath);
-        var prompts = promptProvider.GetPrompts();
-        if (prompts.Count > 0)
-        {
-            builder.WithPrompts(prompts);
-        }
+        // Register the file store as a singleton so all providers share one instance.
+        builder.Services.AddSingleton<IMcpResourceFileStore>(
+            _ => new McpSkillFileStore(skillsPath));
 
-        var resourceProvider = new FileSystemSkillResourceProvider(skillsPath);
-        var resources = resourceProvider.GetResources();
-        if (resources.Count > 0)
-        {
-            builder.WithResources(resources);
-        }
+        // Register providers as singletons to avoid repeated file reads.
+        builder.Services.AddSingleton<FileSystemSkillPromptProvider>();
+        builder.Services.AddSingleton<FileSystemSkillResourceProvider>();
 
         return builder;
     }

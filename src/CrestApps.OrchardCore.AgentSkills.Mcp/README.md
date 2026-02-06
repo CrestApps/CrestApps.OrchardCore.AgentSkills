@@ -2,7 +2,7 @@
 
 A runtime NuGet package that exposes Orchard Core agent skills to **MCP (Model Context Protocol) servers** using the [MCP C# SDK](https://github.com/modelcontextprotocol/csharp-sdk).
 
-This package loads skill files at runtime from the package output directory and registers them as MCP prompts and resources via dedicated provider classes. It does **not** copy files to the solution — use the companion `CrestApps.OrchardCore.AgentSkills` package for local AI authoring.
+This package loads skill files at runtime via OrchardCore's `FileSystemStore` and registers them as MCP prompts and resources through dedicated provider classes. It does **not** copy files to the solution — use the companion `CrestApps.OrchardCore.AgentSkills` package for local AI authoring.
 
 ## Install
 
@@ -31,21 +31,48 @@ builder.Services.AddMcpServer(mcp =>
 });
 ```
 
+### Resolving Providers from DI
+
+The file store and providers are registered as singletons and can be injected:
+
+```csharp
+public class MyService
+{
+    private readonly FileSystemSkillPromptProvider _promptProvider;
+    private readonly FileSystemSkillResourceProvider _resourceProvider;
+
+    public MyService(
+        FileSystemSkillPromptProvider promptProvider,
+        FileSystemSkillResourceProvider resourceProvider)
+    {
+        _promptProvider = promptProvider;
+        _resourceProvider = resourceProvider;
+    }
+
+    public async Task ListPromptsAsync()
+    {
+        var prompts = await _promptProvider.GetPromptsAsync();
+        // ...
+    }
+}
+```
+
 ## Requirements
 
 - [MCP C# SDK](https://github.com/modelcontextprotocol/csharp-sdk) (`ModelContextProtocol` NuGet package)
+- [OrchardCore.FileStorage.FileSystem](https://www.nuget.org/packages/OrchardCore.FileStorage.FileSystem) for file access
 - An MCP server host (e.g., ASP.NET Core with `ModelContextProtocol.AspNetCore`)
 
 ## Architecture
 
-### Providers
+### Services
 
-The package uses two provider classes for clean separation of concerns:
-
-| Provider | Purpose |
-|---|---|
-| `FileSystemSkillPromptProvider` | Reads `prompts.md` files from skill directories and produces `McpServerPrompt` instances |
-| `FileSystemSkillResourceProvider` | Reads `skill.yaml` and `examples/*.md` files and produces `McpServerResource` instances |
+| Service | Lifetime | Purpose |
+|---|---|---|
+| `IMcpResourceFileStore` | Singleton | Marker interface wrapping OrchardCore `FileSystemStore` for skill file access |
+| `McpSkillFileStore` | Singleton | Concrete implementation rooted at the skills directory |
+| `FileSystemSkillPromptProvider` | Singleton | Reads `prompts.md` → cached `McpServerPrompt` instances |
+| `FileSystemSkillResourceProvider` | Singleton | Reads `skill.yaml` + `examples/*.md` → cached `McpServerResource` instances |
 
 ### What Gets Exposed
 
@@ -69,9 +96,9 @@ The package uses two provider classes for clean separation of concerns:
 
 1. Skill files are packed into the NuGet package under `contentFiles/any/any/.agents/skills/`.
 2. NuGet copies these files into the project output directory on restore.
-3. At runtime, `FileSystemSkillPromptProvider` reads `prompts.md` files and `FileSystemSkillResourceProvider` reads `skill.yaml` and example files.
-4. The `AddOrchardCoreSkills()` extension registers the resulting MCP prompts and resources.
-5. MCP clients can then discover and use these prompts and resources.
+3. `AddOrchardCoreSkills()` registers `IMcpResourceFileStore`, `FileSystemSkillPromptProvider`, and `FileSystemSkillResourceProvider` as singletons.
+4. At runtime, providers use OrchardCore `FileSystemStore` to read files — results are cached after the first call.
+5. MCP clients can discover and use these prompts and resources via the MCP protocol.
 
 ## Companion Packages
 

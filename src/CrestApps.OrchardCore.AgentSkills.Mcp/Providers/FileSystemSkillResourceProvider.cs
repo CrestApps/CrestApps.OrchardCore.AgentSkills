@@ -1,47 +1,63 @@
+using CrestApps.OrchardCore.AgentSkills.Mcp.Services;
 using ModelContextProtocol.Server;
 
 namespace CrestApps.OrchardCore.AgentSkills.Mcp.Providers;
 
 /// <summary>
-/// Loads Orchard Core skill resource files from the filesystem and
-/// produces <see cref="McpServerResource"/> instances for MCP registration.
+/// Loads Orchard Core skill resource files via <see cref="IMcpResourceFileStore"/>
+/// and produces <see cref="McpServerResource"/> instances for MCP registration.
 /// Each <c>skill.yaml</c> and <c>examples/*.md</c> file becomes a resource.
+/// Registered as a singleton to avoid repeated file enumeration.
 /// </summary>
 public sealed class FileSystemSkillResourceProvider
 {
-    private readonly string _skillsPath;
+    private readonly IMcpResourceFileStore _fileStore;
+    private IReadOnlyList<McpServerResource>? _resources;
 
-    public FileSystemSkillResourceProvider(string skillsPath)
+    public FileSystemSkillResourceProvider(IMcpResourceFileStore fileStore)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(skillsPath);
-        _skillsPath = skillsPath;
+        ArgumentNullException.ThrowIfNull(fileStore);
+        _fileStore = fileStore;
     }
 
     /// <summary>
     /// Discovers all <c>skill.yaml</c> and example files under the skills
     /// directory and creates MCP resource instances from their contents.
+    /// Results are cached after the first call.
     /// </summary>
-    /// <returns>A list of <see cref="McpServerResource"/> instances.</returns>
-    public IReadOnlyList<McpServerResource> GetResources()
+    public async Task<IReadOnlyList<McpServerResource>> GetResourcesAsync()
     {
-        if (!Directory.Exists(_skillsPath))
+        if (_resources is not null)
         {
-            return [];
+            return _resources;
         }
 
         var resources = new List<McpServerResource>();
 
-        foreach (var skillDir in Directory.EnumerateDirectories(_skillsPath))
+        await foreach (var skillDir in _fileStore.GetDirectoryContentAsync(null, includeSubDirectories: false))
         {
-            var skillName = Path.GetFileName(skillDir);
-
-            // Register skill.yaml as a resource
-            var skillFile = Path.Combine(skillDir, "skill.yaml");
-            if (File.Exists(skillFile))
+            if (!skillDir.IsDirectory)
             {
-                var capturedSkillFile = skillFile;
+                continue;
+            }
+
+            var skillName = skillDir.Name;
+
+            // Register skill.yaml as a resource.
+            var skillYamlPath = $"{skillName}/skill.yaml";
+            var skillInfo = await _fileStore.GetFileInfoAsync(skillYamlPath);
+
+            if (skillInfo is not null)
+            {
+                var capturedSkillPath = skillYamlPath;
                 var resource = McpServerResource.Create(
-                    () => File.ReadAllText(capturedSkillFile),
+                    async () =>
+                    {
+                        await using var stream = await _fileStore.GetFileStreamAsync(capturedSkillPath);
+                        using var reader = new StreamReader(stream);
+
+                        return await reader.ReadToEndAsync();
+                    },
                     new McpServerResourceCreateOptions
                     {
                         Name = $"{skillName}/skill.yaml",
@@ -52,19 +68,32 @@ public sealed class FileSystemSkillResourceProvider
                 resources.Add(resource);
             }
 
-            // Register example files as resources
-            var examplesDir = Path.Combine(skillDir, "examples");
-            if (!Directory.Exists(examplesDir))
+            // Register example *.md files as resources.
+            var examplesPath = $"{skillName}/examples";
+            var examplesDir = await _fileStore.GetDirectoryInfoAsync(examplesPath);
+
+            if (examplesDir is null)
             {
                 continue;
             }
 
-            foreach (var exampleFile in Directory.EnumerateFiles(examplesDir, "*.md"))
+            await foreach (var entry in _fileStore.GetDirectoryContentAsync(examplesPath, includeSubDirectories: false))
             {
-                var fileName = Path.GetFileName(exampleFile);
-                var capturedExampleFile = exampleFile;
+                if (entry.IsDirectory || !entry.Name.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var fileName = entry.Name;
+                var capturedExamplePath = entry.Path;
                 var resource = McpServerResource.Create(
-                    () => File.ReadAllText(capturedExampleFile),
+                    async () =>
+                    {
+                        await using var stream = await _fileStore.GetFileStreamAsync(capturedExamplePath);
+                        using var reader = new StreamReader(stream);
+
+                        return await reader.ReadToEndAsync();
+                    },
                     new McpServerResourceCreateOptions
                     {
                         Name = $"{skillName}/examples/{fileName}",
@@ -76,6 +105,8 @@ public sealed class FileSystemSkillResourceProvider
             }
         }
 
-        return resources;
+        _resources = resources;
+
+        return _resources;
     }
 }

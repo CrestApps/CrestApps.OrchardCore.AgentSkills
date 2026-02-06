@@ -3,7 +3,7 @@
   <!--
     CrestApps.OrchardCore.AgentSkills
     Copies agent skill / guardrail files from the NuGet package into the
-    solution-root .agents/ folder on package install, update, and restore.
+    solution-root .agents/skills folder on package install, update, and restore.
 
     Uses buildTransitive so this target applies to every project that
     references this package — even transitively.
@@ -12,29 +12,21 @@
     This target does NOT depend on compilation.
   -->
 
-  <PropertyGroup>
-    <!-- Source: the skills content shipped inside the NuGet package -->
-    <_CrestAppsAgentSource>$(MSBuildThisFileDirectory)..\contentFiles\any\any\.agents\</_CrestAppsAgentSource>
+  <Target Name="CopyAgentSkillsToSolution" AfterTargets="Restore">
 
-    <!-- Target: the solution-root .agents/ folder -->
-    <_CrestAppsAgentTarget Condition="'$(SolutionDir)' != '' And '$(SolutionDir)' != '*Undefined*'">$(SolutionDir).agents\</_CrestAppsAgentTarget>
-    <_CrestAppsAgentTarget Condition="'$(_CrestAppsAgentTarget)' == ''">$(MSBuildProjectDirectory)\..\.agents\</_CrestAppsAgentTarget>
-  </PropertyGroup>
-
-  <Target Name="_CrestAppsCopyAgentFiles"
-          BeforeTargets="CollectPackageReferences;ResolvePackageAssets"
-          Condition="Exists('$(_CrestAppsAgentSource)')">
+    <PropertyGroup>
+      <AgentTargetDir Condition=" '$(SolutionDir)' != '' And '$(SolutionDir)' != '*Undefined*' ">$(SolutionDir).agents\skills</AgentTargetDir>
+      <AgentTargetDir Condition=" '$(AgentTargetDir)' == '' ">$(MSBuildProjectDirectory)\.agents\skills</AgentTargetDir>
+    </PropertyGroup>
 
     <ItemGroup>
-      <_CrestAppsAgentFiles Include="$(_CrestAppsAgentSource)**\*" />
+      <AgentSkills Include="$(MSBuildThisFileDirectory)..\contentFiles\any\any\.agents\skills\**\*.*" />
     </ItemGroup>
 
-    <MakeDir Directories="$(_CrestAppsAgentTarget)" Condition="!Exists('$(_CrestAppsAgentTarget)')" />
-
-    <Copy SourceFiles="@(_CrestAppsAgentFiles)"
-          DestinationFiles="@(_CrestAppsAgentFiles->'$(_CrestAppsAgentTarget)%(RecursiveDir)%(Filename)%(Extension)')"
-          OverwriteReadOnlyFiles="true"
-          SkipUnchangedFiles="false" />
+    <Copy SourceFiles="@(AgentSkills)"
+          DestinationFolder="$(AgentTargetDir)\%(RecursiveDir)"
+          SkipUnchangedFiles="true"
+          OverwriteReadOnlyFiles="true" />
 
   </Target>
 
