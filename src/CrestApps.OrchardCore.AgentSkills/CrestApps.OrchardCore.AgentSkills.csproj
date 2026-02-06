@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <PackageId>CrestApps.OrchardCore.AgentSkills</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>CrestApps</Authors>
+    <Description>Reusable Agent Skills for Orchard Core development. Follows agentskills.io standards. Skills auto-mount into .agents/skills for immediate AI agent discovery.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/CrestApps/CrestApps.OrchardCore.AgentSkills</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/CrestApps/CrestApps.OrchardCore.AgentSkills</RepositoryUrl>
+    <PackageTags>orchard-core;agent-skills;ai;agentskills;cms</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="contentFiles\**\*.*"
+             Pack="true"
+             PackagePath="contentFiles" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>
