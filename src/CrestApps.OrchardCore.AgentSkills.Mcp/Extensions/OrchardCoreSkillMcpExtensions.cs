@@ -26,7 +26,9 @@ public static class OrchardCoreSkillMcpExtensions
 
     /// <summary>
     /// Registers Orchard Core agent skills as MCP prompts and resources
-    /// with optional configuration. All services are registered as singletons.
+    /// with optional configuration. The <see cref="IMcpResourceFileStore"/>,
+    /// <see cref="FileSystemSkillPromptProvider"/>, and <see cref="FileSystemSkillResourceProvider"/>
+    /// are registered as singletons and immediately used to populate the MCP server.
     /// </summary>
     /// <param name="builder">The MCP server builder.</param>
     /// <param name="configure">A delegate to configure skill options.</param>
@@ -44,13 +46,28 @@ public static class OrchardCoreSkillMcpExtensions
         var skillsPath = options.Path
             ?? Path.Combine(AppContext.BaseDirectory, DefaultSkillsRelativePath);
 
-        // Register the file store as a singleton so all providers share one instance.
-        builder.Services.AddSingleton<IMcpResourceFileStore>(
-            _ => new McpSkillFileStore(skillsPath));
+        // Create singleton instances.
+        var fileStore = new McpSkillFileStore(skillsPath);
+        var promptProvider = new FileSystemSkillPromptProvider(fileStore);
+        var resourceProvider = new FileSystemSkillResourceProvider(fileStore);
 
-        // Register providers as singletons to avoid repeated file reads.
-        builder.Services.AddSingleton<FileSystemSkillPromptProvider>();
-        builder.Services.AddSingleton<FileSystemSkillResourceProvider>();
+        // Register singletons in DI for consumer injection.
+        builder.Services.AddSingleton<IMcpResourceFileStore>(fileStore);
+        builder.Services.AddSingleton(promptProvider);
+        builder.Services.AddSingleton(resourceProvider);
+
+        // Eagerly load and register prompts/resources with the MCP server.
+        var prompts = promptProvider.GetPromptsAsync().GetAwaiter().GetResult();
+        if (prompts.Count > 0)
+        {
+            builder.WithPrompts(prompts);
+        }
+
+        var resources = resourceProvider.GetResourcesAsync().GetAwaiter().GetResult();
+        if (resources.Count > 0)
+        {
+            builder.WithResources(resources);
+        }
 
         return builder;
     }

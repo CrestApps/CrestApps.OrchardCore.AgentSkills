@@ -23,7 +23,8 @@ public sealed class FileSystemSkillPromptProvider
     /// <summary>
     /// Discovers all <c>prompts.md</c> files under the skills directory and
     /// creates MCP prompt instances from their contents.
-    /// Results are cached after the first call.
+    /// Results are cached after the first call. File content is read once
+    /// and stored in memory to avoid repeated I/O.
     /// </summary>
     public async Task<IReadOnlyList<McpServerPrompt>> GetPromptsAsync()
     {
@@ -50,15 +51,16 @@ public sealed class FileSystemSkillPromptProvider
                 continue;
             }
 
-            var capturedPath = promptPath;
-            var prompt = McpServerPrompt.Create(
-                async () =>
-                {
-                    await using var stream = await _fileStore.GetFileStreamAsync(capturedPath);
-                    using var reader = new StreamReader(stream);
+            // Read file content once and cache it.
+            string content;
+            await using (var stream = await _fileStore.GetFileStreamAsync(promptPath))
+            using (var reader = new StreamReader(stream))
+            {
+                content = await reader.ReadToEndAsync();
+            }
 
-                    return await reader.ReadToEndAsync();
-                },
+            var prompt = McpServerPrompt.Create(
+                () => content,
                 new McpServerPromptCreateOptions
                 {
                     Name = skillName,

@@ -23,7 +23,8 @@ public sealed class FileSystemSkillResourceProvider
     /// <summary>
     /// Discovers all <c>skill.yaml</c> and example files under the skills
     /// directory and creates MCP resource instances from their contents.
-    /// Results are cached after the first call.
+    /// Results are cached after the first call. File content is read once
+    /// and stored in memory to avoid repeated I/O.
     /// </summary>
     public async Task<IReadOnlyList<McpServerResource>> GetResourcesAsync()
     {
@@ -49,15 +50,16 @@ public sealed class FileSystemSkillResourceProvider
 
             if (skillInfo is not null)
             {
-                var capturedSkillPath = skillYamlPath;
-                var resource = McpServerResource.Create(
-                    async () =>
-                    {
-                        await using var stream = await _fileStore.GetFileStreamAsync(capturedSkillPath);
-                        using var reader = new StreamReader(stream);
+                // Read file content once and cache it.
+                string skillContent;
+                await using (var stream = await _fileStore.GetFileStreamAsync(skillYamlPath))
+                using (var reader = new StreamReader(stream))
+                {
+                    skillContent = await reader.ReadToEndAsync();
+                }
 
-                        return await reader.ReadToEndAsync();
-                    },
+                var resource = McpServerResource.Create(
+                    () => skillContent,
                     new McpServerResourceCreateOptions
                     {
                         Name = $"{skillName}/skill.yaml",
@@ -85,15 +87,17 @@ public sealed class FileSystemSkillResourceProvider
                 }
 
                 var fileName = entry.Name;
-                var capturedExamplePath = entry.Path;
-                var resource = McpServerResource.Create(
-                    async () =>
-                    {
-                        await using var stream = await _fileStore.GetFileStreamAsync(capturedExamplePath);
-                        using var reader = new StreamReader(stream);
 
-                        return await reader.ReadToEndAsync();
-                    },
+                // Read file content once and cache it.
+                string exampleContent;
+                await using (var stream = await _fileStore.GetFileStreamAsync(entry.Path))
+                using (var reader = new StreamReader(stream))
+                {
+                    exampleContent = await reader.ReadToEndAsync();
+                }
+
+                var resource = McpServerResource.Create(
+                    () => exampleContent,
                     new McpServerResourceCreateOptions
                     {
                         Name = $"{skillName}/examples/{fileName}",
