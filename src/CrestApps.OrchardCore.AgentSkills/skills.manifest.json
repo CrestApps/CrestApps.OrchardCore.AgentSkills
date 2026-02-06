@@ -2,7 +2,7 @@
   "name": "CrestApps.OrchardCore.AgentSkills",
   "description": "Reusable Orchard Core agent skills",
   "skillRoots": [
-    "contentFiles/any/any/.agents/skills"
+    "contentFiles/any/net10.0/.agents/skills"
   ],
   "mount": {
     "target": ".agents/skills"

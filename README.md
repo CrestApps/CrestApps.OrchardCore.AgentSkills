@@ -4,12 +4,15 @@ Reusable **Agent Skills for Orchard Core development**, distributed via NuGet. T
 
 Once installed, skills **automatically mount** into the consumer project's `.agents/skills` folder so AI agents discover and use them immediately—no manual copying required.
 
+> **Targets .NET 10** (`net10.0`).
+
 ## Overview
 
 - **Purpose**: Provide a centralized, versioned set of Orchard Core skills that AI agents can consume.
 - **Orchard Core Specialization**: Covers content types, modules, recipes, deployments, and AI integrations.
 - **agentskills.io Compliance**: Every skill includes `skill.yaml`, input/output schemas, prompt templates, examples, and follows naming and validation standards.
 - **AI Quality Improvements**: Agents generate higher-quality Orchard Core code by leveraging standardized prompts and examples.
+- **Automatic Mounting**: Skills are copied to `.agents/skills` at the solution root during build via an included MSBuild `.targets` file, and can also be mounted at runtime.
 
 ## Installation
 
@@ -19,14 +22,42 @@ dotnet add package CrestApps.OrchardCore.AgentSkills
 
 ## How Mounting Works
 
-When you install the NuGet package, the skills are delivered via the `contentFiles` mechanism built into NuGet:
+The package provides **two** complementary mounting strategies so skills are always available:
 
-- Skills **auto-mount** into `.agents/skills` at build time.
-- **No manual copying** is required.
-- Agents treat the mounted skills as **local skills**.
-- The **package remains the source of truth**—updates flow via NuGet restore.
+### 1. Build-Time Mounting (MSBuild `.targets`)
 
-After installation, your project will contain:
+An embedded MSBuild `.targets` file runs automatically before each build. It:
+
+1. Locates the skills bundled inside the NuGet package.
+2. Determines the solution root (via `$(SolutionDir)`, falling back to the project directory).
+3. Creates `.agents/skills` at the solution root if it doesn't already exist.
+4. Copies all skill files into that folder, skipping unchanged files.
+
+No configuration is needed — it happens on every build.
+
+### 2. Runtime Mounting (`MountOrchardCoreSkills`)
+
+For scenarios where build-time mounting isn't sufficient (e.g., containerized deployments, dynamic skill loading), call the runtime mounting extension:
+
+```csharp
+builder.Services.AddAgents(agent =>
+{
+    agent.MountOrchardCoreSkills();
+});
+```
+
+This method:
+
+- Discovers skills from the NuGet package's output directory.
+- Walks up the directory tree to find the solution root (looks for `.sln` files or a `.git` directory).
+- Creates `.agents/skills` if it doesn't exist.
+- Copies all skills, overwriting existing files to keep the package as the source of truth.
+- Is **idempotent** — safe to call multiple times.
+- Handles filesystem exceptions gracefully (e.g., read-only environments).
+
+### Result
+
+After installation and build, your solution root will contain:
 
 ```
 .agents/
@@ -40,18 +71,28 @@ After installation, your project will contain:
 
 ## Registering Skills
 
-Use the builder extension to register the auto-mounted skills with your agent framework:
+### Mount and register (recommended)
+
+Automatically copies skills to the solution root **and** registers them:
+
+```csharp
+agentBuilder.MountOrchardCoreSkills();
+```
+
+### Register only
+
+If skills are already present (e.g., from the build-time `.targets`), you can register them from the output directory:
 
 ```csharp
 agentBuilder.AddOrchardCoreSkills();
 ```
 
-Full usage example:
+### Full usage example
 
 ```csharp
 builder.Services.AddAgents(agent =>
 {
-    agent.AddOrchardCoreSkills();
+    agent.MountOrchardCoreSkills();
 });
 ```
 

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeContentInPack>true</IncludeContentInPack>
     <PackageId>CrestApps.OrchardCore.AgentSkills</PackageId>
@@ -13,17 +13,21 @@
     <RepositoryUrl>https://github.com/CrestApps/CrestApps.OrchardCore.AgentSkills</RepositoryUrl>
     <PackageTags>orchard-core;agent-skills;ai;agentskills;cms</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="contentFiles\**\*.*"
+    <Content Include="contentFiles\**\*"
              Pack="true"
-             PackagePath="contentFiles" />
+             PackagePath="contentFiles"
+             BuildAction="Content"
+             CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="build\**\*" Pack="true" PackagePath="build" />
   </ItemGroup>
 
 </Project>

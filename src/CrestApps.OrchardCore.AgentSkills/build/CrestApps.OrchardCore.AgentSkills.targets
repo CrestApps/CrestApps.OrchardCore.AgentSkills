@@ -1,0 +1,36 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    CrestApps.OrchardCore.AgentSkills
+    Automatically copies skills from the NuGet package into .agents/skills
+    at the solution (or project) root during build.
+  -->
+
+  <PropertyGroup>
+    <!-- Locate the skills source inside the NuGet package -->
+    <_CrestAppsSkillsSource>$(MSBuildThisFileDirectory)..\contentFiles\any\net10.0\.agents\skills\</_CrestAppsSkillsSource>
+
+    <!-- Determine the solution root; fall back to the project directory -->
+    <_CrestAppsSolutionRoot Condition="'$(SolutionDir)' != ''">$(SolutionDir)</_CrestAppsSolutionRoot>
+    <_CrestAppsSolutionRoot Condition="'$(_CrestAppsSolutionRoot)' == ''">$(MSBuildProjectDirectory)\</_CrestAppsSolutionRoot>
+
+    <_CrestAppsSkillsTarget>$(_CrestAppsSolutionRoot).agents\skills\</_CrestAppsSkillsTarget>
+  </PropertyGroup>
+
+  <Target Name="_CrestAppsMountSkills"
+          BeforeTargets="Build"
+          Condition="Exists('$(_CrestAppsSkillsSource)')">
+
+    <ItemGroup>
+      <_CrestAppsSkillFiles Include="$(_CrestAppsSkillsSource)**\*" />
+    </ItemGroup>
+
+    <MakeDir Directories="$(_CrestAppsSkillsTarget)" Condition="!Exists('$(_CrestAppsSkillsTarget)')" />
+
+    <Copy SourceFiles="@(_CrestAppsSkillFiles)"
+          DestinationFiles="@(_CrestAppsSkillFiles->'$(_CrestAppsSkillsTarget)%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+
+  </Target>
+
+</Project>
