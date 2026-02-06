@@ -2,8 +2,12 @@
 
   <!--
     CrestApps.OrchardCore.AgentSkills
-    Copies agent skill / guardrail files from the NuGet package into
-    the consuming project's .agents/ folder on restore and install.
+    Copies agent skill / guardrail files from the NuGet package into the
+    solution-root .agents/ folder on package install, update, and restore.
+
+    Uses buildTransitive so this target applies to every project that
+    references this package — even transitively.
+
     Files are always refreshed so that package updates are applied immediately.
     This target does NOT depend on compilation.
   -->
@@ -12,12 +16,13 @@
     <!-- Source: the skills content shipped inside the NuGet package -->
     <_CrestAppsAgentSource>$(MSBuildThisFileDirectory)..\contentFiles\any\any\.agents\</_CrestAppsAgentSource>
 
-    <!-- Target: the consuming project's .agents/ folder -->
-    <_CrestAppsAgentTarget>$(MSBuildProjectDirectory)\.agents\</_CrestAppsAgentTarget>
+    <!-- Target: the solution-root .agents/ folder -->
+    <_CrestAppsAgentTarget Condition="'$(SolutionDir)' != '' And '$(SolutionDir)' != '*Undefined*'">$(SolutionDir).agents\</_CrestAppsAgentTarget>
+    <_CrestAppsAgentTarget Condition="'$(_CrestAppsAgentTarget)' == ''">$(MSBuildProjectDirectory)\..\.agents\</_CrestAppsAgentTarget>
   </PropertyGroup>
 
   <Target Name="_CrestAppsCopyAgentFiles"
-          BeforeTargets="Restore;CollectPackageReferences;ResolvePackageAssets;PrepareForBuild;Build"
+          BeforeTargets="CollectPackageReferences;ResolvePackageAssets;PrepareForBuild"
           Condition="Exists('$(_CrestAppsAgentSource)')">
 
     <ItemGroup>

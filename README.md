@@ -1,92 +1,56 @@
 # CrestApps.OrchardCore.AgentSkills
 
-A NuGet package that distributes shared **AI agent instruction and guardrail files** for Orchard Core development.
+Distributes shared **AI agent instruction and guardrail files** for Orchard Core development, available as two complementary NuGet packages:
 
-When installed, agent files are automatically copied into the consuming project's `.agents/` folder on package install, update, and restore. There is **no runtime dependency** — this package is used purely for development and AI tooling guidance.
+| Package | Purpose |
+|---|---|
+| [`CrestApps.OrchardCore.AgentSkills`](src/CrestApps.OrchardCore.AgentSkills/) | **Dev / design-time** — copies skills into solution-root `.agents/skills` for local AI authoring tools (GitHub Copilot, Cursor, Cline) |
+| [`CrestApps.OrchardCore.AgentSkills.Mcp`](src/CrestApps.OrchardCore.AgentSkills.Mcp/) | **Runtime / MCP server** — loads skills at runtime and exposes them as MCP prompts and resources |
 
-## Overview
+## Quick Start
 
-- **Shared AI agent guardrails**: Provides standardized agent instruction files that guide AI code-generation tools when working with Orchard Core projects.
-- **Standardizes agent behavior**: Every project that installs this package receives the same set of agent skills, ensuring consistent AI-assisted development across teams and repositories.
-- **Installs files into `.agents/`**: On package install or update, skill files are copied into the project's `.agents/` directory where AI tools can discover them.
-- **No runtime footprint**: This package contains no compiled assemblies and adds nothing to your application's deployment. It is a development-only dependency.
-
-## Installation
+### Local AI Authoring
 
 ```bash
 dotnet add package CrestApps.OrchardCore.AgentSkills
 ```
 
-## How It Works
+After install and restore, the solution root will contain:
 
-1. The NuGet package includes agent skill files under `contentFiles/any/any/.agents/skills/`.
-2. An embedded MSBuild `.targets` file runs automatically on **restore, install, and update** — not just at build time.
-3. The `.targets` file copies all agent files from the NuGet package cache into the consuming project's `.agents/` folder.
-4. AI development tools (e.g., GitHub Copilot, Cursor, Cline) read the guardrail files from `.agents/` and use them to generate higher-quality Orchard Core code.
-
-**Key points:**
-
-- Files are copied locally on install and update — **no manual copying required**.
-- There is **no runtime dependency** and **no deployment impact**.
-- The package is used purely for **development and AI tooling guidance**.
-- Copying happens via MSBuild targets, independent of compilation.
-
-## How to Consume
-
-1. Install the NuGet package:
-   ```bash
-   dotnet add package CrestApps.OrchardCore.AgentSkills
-   ```
-2. Restore packages:
-   ```bash
-   dotnet restore
-   ```
-3. The `.agents/` folder appears in your project directory:
-   ```
-   .agents/
-     skills/
-       orchardcore.content-types/
-       orchardcore.modules/
-       orchardcore.recipes/
-       orchardcore.deployments/
-       orchardcore.ai/
-   ```
-4. AI tools automatically read guardrails from these files.
-
-## File Update Behavior
-
-- When the NuGet package is **updated**, all agent files are **refreshed automatically** on the next restore or build.
-- The latest agent standards and guardrails are always applied without manual intervention.
-- Files originating from this package are **overwritten** to ensure they stay in sync with the package version.
-
-> **Note:**
-> This project installs shared agent files into your local `.agents/` folder.
-> If needed, it will replace common agent files (such as `Agents.md`) that already exist in your project.
-> Do **not** modify files added by this package inside `.agents/`, as your changes will be lost after a NuGet package update.
-
-## Keeping Projects Up To Date
-
-### Floating Version
-
-Always get the latest agent files on restore:
-
-```xml
-<PackageReference Include="CrestApps.OrchardCore.AgentSkills" Version="1.*" />
+```
+.agents/
+  skills/
+    orchardcore.content-types/
+    orchardcore.modules/
+    orchardcore.recipes/
+    orchardcore.deployments/
+    orchardcore.ai/
 ```
 
-### Locked Version
+- Files are copied on **install/update** (not build).
+- **No runtime dependency** — purely for development and AI tooling guidance.
+- Files are refreshed when the package is updated.
 
-Pin to a specific version for full control:
-
-```xml
-<PackageReference Include="CrestApps.OrchardCore.AgentSkills" Version="1.0.0" />
-```
-
-Update manually:
+### MCP Server Hosting
 
 ```bash
-dotnet add package CrestApps.OrchardCore.AgentSkills --version 1.1.0
+dotnet add package CrestApps.OrchardCore.AgentSkills.Mcp
 ```
+
+```csharp
+builder.Services.AddMcpServer(mcp =>
+{
+    mcp.AddOrchardCoreSkills();
+});
+```
+
+- Loads skills at runtime from the package output directory.
+- Registers prompts and resources via the [MCP C# SDK](https://github.com/modelcontextprotocol/csharp-sdk).
+- No file copying to solution.
+
+### Full Experience
+
+Install both packages to get local AI authoring **and** MCP server support.
 
 ## Skill Categories
 
@@ -102,11 +66,23 @@ dotnet add package CrestApps.OrchardCore.AgentSkills --version 1.1.0
 
 ```
 src/
-└─ Skills/
-   ├─ .agents/skills/       ← agent guardrail content (yaml, md, examples)
-   ├─ build/                ← MSBuild .targets for auto-copy on restore
-   └─ CrestApps.OrchardCore.AgentSkills.csproj
+├─ CrestApps.OrchardCore.AgentSkills/           ← Dev package
+│  ├─ contentFiles/any/any/.agents/skills/       ← Skill content
+│  ├─ buildTransitive/                           ← MSBuild .targets for solution-root copy
+│  ├─ README.md
+│  └─ CrestApps.OrchardCore.AgentSkills.csproj
+│
+└─ CrestApps.OrchardCore.AgentSkills.Mcp/       ← MCP runtime package
+   ├─ contentFiles/any/any/.agents/skills/       ← Skill content (copied to output)
+   ├─ Extensions/                                ← MCP extension methods
+   ├─ README.md
+   └─ CrestApps.OrchardCore.AgentSkills.Mcp.csproj
 ```
+
+> **Note:**
+> This project installs shared agent files into your local `.agents/` folder.
+> If needed, it will replace common agent files (such as `Agents.md`) that already exist in your project.
+> Do **not** modify files added by this package inside `.agents/`, as your changes will be lost after a NuGet package update.
 
 ## License
 

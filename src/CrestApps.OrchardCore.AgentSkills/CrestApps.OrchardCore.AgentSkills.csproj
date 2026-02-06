@@ -9,7 +9,7 @@
     <PackageId>CrestApps.OrchardCore.AgentSkills</PackageId>
     <Version>1.0.0</Version>
     <Authors>CrestApps</Authors>
-    <Description>Distributes shared AI agent guardrail and instruction files for Orchard Core development. Files are copied into the consuming project's .agents/ folder on install and update — no runtime dependency.</Description>
+    <Description>Distributes shared AI agent guardrail and instruction files for Orchard Core development. Skills are copied into the solution-root .agents/skills folder on install and update. No runtime dependency.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/CrestApps/CrestApps.OrchardCore.AgentSkills</PackageProjectUrl>
     <RepositoryUrl>https://github.com/CrestApps/CrestApps.OrchardCore.AgentSkills</RepositoryUrl>
@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include=".agents\skills\**\*"
+    <Content Include="contentFiles\any\any\.agents\skills\**\*"
              Pack="true"
              PackagePath="contentFiles\any\any\.agents\skills"
              BuildAction="Content"
@@ -28,8 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
-    <None Include="build\**\*" Pack="true" PackagePath="build" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="buildTransitive\**\*" Pack="true" PackagePath="buildTransitive" />
   </ItemGroup>
 
 </Project>
