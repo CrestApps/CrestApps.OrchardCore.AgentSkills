@@ -19,6 +19,16 @@ builder.Services.AddMcpServer(mcp =>
 });
 ```
 
+### Register Services Only (No Eager Loading)
+
+To register the skill services in DI without eagerly loading them:
+
+```csharp
+builder.Services.AddOrchardCoreAgentSkillServices();
+```
+
+The consumer is then responsible for resolving `FileSystemSkillPromptProvider` and `FileSystemSkillResourceProvider` and attaching them to the MCP server.
+
 ### With Custom Path
 
 ```csharp
@@ -36,7 +46,7 @@ builder.Services.AddMcpServer(mcp =>
 The file store and providers are registered as singletons and can be injected:
 
 ```csharp
-public class MyService
+public sealed class MyService
 {
     private readonly FileSystemSkillPromptProvider _promptProvider;
     private readonly FileSystemSkillResourceProvider _resourceProvider;

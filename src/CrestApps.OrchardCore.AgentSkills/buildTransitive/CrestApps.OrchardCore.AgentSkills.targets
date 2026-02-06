@@ -8,25 +8,37 @@
     Uses buildTransitive so this target applies to every project that
     references this package — even transitively.
 
-    Files are always refreshed so that package updates are applied immediately.
+    Incremental: only re-copies when source files have changed (stamp file).
     This target does NOT depend on compilation.
   -->
 
-  <Target Name="CopyAgentSkillsToSolution" AfterTargets="Restore">
+  <!-- Resolve the solution root directory reliably. -->
+  <PropertyGroup>
+    <_AgentSolutionRoot Condition=" '$(SolutionDir)' != '' And '$(SolutionDir)' != '*Undefined*' ">$(SolutionDir)</_AgentSolutionRoot>
+    <_AgentSolutionRoot Condition=" '$(_AgentSolutionRoot)' == '' ">$(MSBuildProjectDirectory)\..\</_AgentSolutionRoot>
+    <_AgentTargetDir>$(_AgentSolutionRoot).agents\skills\</_AgentTargetDir>
+    <_AgentStampFile>$(BaseIntermediateOutputPath)CrestApps.AgentSkills.stamp</_AgentStampFile>
+  </PropertyGroup>
 
-    <PropertyGroup>
-      <AgentTargetDir Condition=" '$(SolutionDir)' != '' And '$(SolutionDir)' != '*Undefined*' ">$(SolutionDir).agents\skills</AgentTargetDir>
-      <AgentTargetDir Condition=" '$(AgentTargetDir)' == '' ">$(MSBuildProjectDirectory)\.agents\skills</AgentTargetDir>
-    </PropertyGroup>
+  <!-- Resolve source files from the NuGet package skills/ folder. -->
+  <ItemGroup>
+    <_AgentSkillFiles Include="$(MSBuildThisFileDirectory)..\skills\**\*.*" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <AgentSkills Include="$(MSBuildThisFileDirectory)..\contentFiles\any\any\.agents\skills\**\*.*" />
-    </ItemGroup>
+  <Target Name="CopyAgentSkillsToSolution"
+          AfterTargets="Restore"
+          Inputs="@(_AgentSkillFiles)"
+          Outputs="$(_AgentStampFile)"
+          Condition="'@(_AgentSkillFiles)' != ''">
 
-    <Copy SourceFiles="@(AgentSkills)"
-          DestinationFolder="$(AgentTargetDir)\%(RecursiveDir)"
+    <MakeDir Directories="$(_AgentTargetDir)" Condition="!Exists('$(_AgentTargetDir)')" />
+
+    <Copy SourceFiles="@(_AgentSkillFiles)"
+          DestinationFolder="$(_AgentTargetDir)%(RecursiveDir)"
           SkipUnchangedFiles="true"
           OverwriteReadOnlyFiles="true" />
+
+    <Touch Files="$(_AgentStampFile)" AlwaysCreate="true" />
 
   </Target>
 

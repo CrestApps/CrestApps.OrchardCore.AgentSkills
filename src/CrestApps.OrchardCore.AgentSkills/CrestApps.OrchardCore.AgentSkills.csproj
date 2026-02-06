@@ -3,7 +3,6 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <IncludeContentInPack>true</IncludeContentInPack>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <PackageId>CrestApps.OrchardCore.AgentSkills</PackageId>
     <Description>Distributes shared AI agent guardrail and instruction files for Orchard Core development. Skills are copied into the solution-root .agents/skills folder on install and update. No runtime dependency.</Description>
@@ -13,12 +12,12 @@
     <NoWarn>$(NoWarn);NU5128</NoWarn>
   </PropertyGroup>
 
+  <!-- Pack skill files under skills/ in the nupkg (not contentFiles/) to avoid
+       NuGet auto-linking. The buildTransitive .targets handles copying. -->
   <ItemGroup>
-    <Content Include="..\skills\.agents\skills\**\*"
-             Pack="true"
-             PackagePath="contentFiles\any\any\.agents\skills"
-             BuildAction="Content"
-             CopyToOutputDirectory="Never" />
+    <None Include="..\skills\.agents\skills\**\*"
+          Pack="true"
+          PackagePath="skills" />
   </ItemGroup>
 
   <ItemGroup>

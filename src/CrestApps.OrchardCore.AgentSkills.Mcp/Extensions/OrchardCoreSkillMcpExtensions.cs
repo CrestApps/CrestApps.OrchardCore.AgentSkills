@@ -1,21 +1,67 @@
 using CrestApps.OrchardCore.AgentSkills.Mcp.Providers;
 using CrestApps.OrchardCore.AgentSkills.Mcp.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace CrestApps.OrchardCore.AgentSkills.Mcp.Extensions;
 
 /// <summary>
-/// Extension methods for registering Orchard Core agent skills with an MCP server.
+/// Extension methods for registering Orchard Core agent skills with an MCP server
+/// or with the dependency injection container.
 /// </summary>
 public static class OrchardCoreSkillMcpExtensions
 {
     private const string DefaultSkillsRelativePath = ".agents/skills";
 
     /// <summary>
+    /// Registers the Orchard Core agent skill services (<see cref="IMcpResourceFileStore"/>,
+    /// <see cref="FileSystemSkillPromptProvider"/>, and <see cref="FileSystemSkillResourceProvider"/>)
+    /// as singletons in the DI container. Does <b>not</b> eagerly load or attach them to an MCP server.
+    /// The consumer is responsible for resolving providers and attaching them as needed.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <returns>The service collection for chaining.</returns>
+    public static IServiceCollection AddOrchardCoreAgentSkillServices(this IServiceCollection services)
+    {
+        return services.AddOrchardCoreAgentSkillServices(_ => { });
+    }
+
+    /// <summary>
+    /// Registers the Orchard Core agent skill services (<see cref="IMcpResourceFileStore"/>,
+    /// <see cref="FileSystemSkillPromptProvider"/>, and <see cref="FileSystemSkillResourceProvider"/>)
+    /// as singletons in the DI container with optional configuration.
+    /// Does <b>not</b> eagerly load or attach them to an MCP server.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configure">A delegate to configure skill options.</param>
+    /// <returns>The service collection for chaining.</returns>
+    public static IServiceCollection AddOrchardCoreAgentSkillServices(
+        this IServiceCollection services,
+        Action<OrchardCoreSkillOptions> configure)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configure);
+
+        var options = new OrchardCoreSkillOptions();
+        configure(options);
+
+        var skillsPath = options.Path
+            ?? Path.Combine(AppContext.BaseDirectory, DefaultSkillsRelativePath);
+
+        services.AddSingleton<IMcpResourceFileStore>(new McpSkillFileStore(skillsPath));
+        services.AddSingleton<FileSystemSkillPromptProvider>();
+        services.AddSingleton<FileSystemSkillResourceProvider>();
+
+        return services;
+    }
+
+    /// <summary>
     /// Registers Orchard Core agent skills as MCP prompts and resources.
     /// Skills are loaded at runtime from the NuGet package output directory.
     /// The <see cref="IMcpResourceFileStore"/>, <see cref="FileSystemSkillPromptProvider"/>,
-    /// and <see cref="FileSystemSkillResourceProvider"/> are registered as singletons.
+    /// and <see cref="FileSystemSkillResourceProvider"/> are registered as singletons
+    /// and immediately used to populate the MCP server.
     /// </summary>
     /// <param name="builder">The MCP server builder.</param>
     /// <returns>The builder for chaining.</returns>
@@ -46,10 +92,12 @@ public static class OrchardCoreSkillMcpExtensions
         var skillsPath = options.Path
             ?? Path.Combine(AppContext.BaseDirectory, DefaultSkillsRelativePath);
 
-        // Create singleton instances.
+        // Create singleton instances for eager loading.
         var fileStore = new McpSkillFileStore(skillsPath);
-        var promptProvider = new FileSystemSkillPromptProvider(fileStore);
-        var resourceProvider = new FileSystemSkillResourceProvider(fileStore);
+        var promptProvider = new FileSystemSkillPromptProvider(
+            fileStore, NullLogger<FileSystemSkillPromptProvider>.Instance);
+        var resourceProvider = new FileSystemSkillResourceProvider(
+            fileStore, NullLogger<FileSystemSkillResourceProvider>.Instance);
 
         // Register singletons in DI for consumer injection.
         builder.Services.AddSingleton<IMcpResourceFileStore>(fileStore);
