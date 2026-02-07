@@ -4,6 +4,10 @@ A generic, reusable **MCP (Model Context Protocol)** engine that discovers and e
 
 This package is **framework-agnostic** and independent of Orchard Core. Any application can use it to expose its own skills via MCP.
 
+## Role in CrestApps.AgentSkills
+
+`CrestApps.AgentSkills.Mcp` is the generic MCP engine in the CrestApps.AgentSkills repository. It solves the problem of repeatedly implementing skill file parsing and MCP provider wiring by offering a reusable, framework-agnostic library.
+
 ## Who Is This For?
 
 - **Any .NET application** that wants to expose Agent Skills via MCP
