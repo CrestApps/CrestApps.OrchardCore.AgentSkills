@@ -1,7 +1,7 @@
 using CrestApps.AgentSkills.Mcp.Services;
 using Xunit;
 
-namespace CrestApps.OrchardCore.AgentSkills.Mcp.Tests;
+namespace CrestApps.AgentSkills.Mcp.Tests;
 
 public sealed class SkillFrontMatterParserTests
 {
