@@ -31,7 +31,7 @@ To register the skill services in DI without eagerly loading them:
 builder.Services.AddOrchardCoreAgentSkillServices();
 ```
 
-The consumer is then responsible for resolving `FileSystemSkillPromptProvider` and `FileSystemSkillResourceProvider` and attaching them to the MCP server.
+The consumer is then responsible for resolving `ISkillPromptProvider` and `ISkillResourceProvider` and attaching them to the MCP server.
 
 ### With Custom Path
 
@@ -52,12 +52,12 @@ The file store and providers are registered as singletons and can be injected:
 ```csharp
 public sealed class MyService
 {
-    private readonly FileSystemSkillPromptProvider _promptProvider;
-    private readonly FileSystemSkillResourceProvider _resourceProvider;
+    private readonly ISkillPromptProvider _promptProvider;
+    private readonly ISkillResourceProvider _resourceProvider;
 
     public MyService(
-        FileSystemSkillPromptProvider promptProvider,
-        FileSystemSkillResourceProvider resourceProvider)
+        ISkillPromptProvider promptProvider,
+        ISkillResourceProvider resourceProvider)
     {
         _promptProvider = promptProvider;
         _resourceProvider = resourceProvider;
@@ -85,8 +85,8 @@ public sealed class MyService
 |---|---|---|
 | `IMcpResourceFileStore` | Singleton | Marker interface wrapping OrchardCore `FileSystemStore` for skill file access |
 | `McpSkillFileStore` | Singleton | Concrete implementation rooted at the skills directory |
-| `FileSystemSkillPromptProvider` | Singleton | Reads `prompts.md` → cached `McpServerPrompt` instances |
-| `FileSystemSkillResourceProvider` | Singleton | Reads `skill.yaml` + `examples/*.md` → cached `McpServerResource` instances |
+| `ISkillPromptProvider` | Singleton | Reads `prompts.md` → cached `McpServerPrompt` instances |
+| `ISkillResourceProvider` | Singleton | Reads `skill.yaml` + `examples/*.md` → cached `McpServerResource` instances |
 
 ### What Gets Exposed
 
@@ -110,7 +110,7 @@ public sealed class MyService
 
 1. Skill files are packed into the NuGet package under `contentFiles/any/any/.agents/skills/`.
 2. NuGet copies these files into the project output directory on restore.
-3. `AddOrchardCoreSkills()` registers `IMcpResourceFileStore`, `FileSystemSkillPromptProvider`, and `FileSystemSkillResourceProvider` as singletons.
+3. `AddOrchardCoreSkills()` registers `IMcpResourceFileStore`, `ISkillPromptProvider`, and `ISkillResourceProvider` as singletons.
 4. At runtime, providers use OrchardCore `FileSystemStore` to read files — results are cached after the first call.
 5. MCP clients can discover and use these prompts and resources via the MCP protocol.
 

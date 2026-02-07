@@ -16,7 +16,7 @@ public static class AgentSkillMcpExtensions
 
     /// <summary>
     /// Registers the Agent Skill services (<see cref="ISkillFileStore"/>,
-    /// <see cref="SkillPromptProvider"/>, and <see cref="SkillResourceProvider"/>)
+    /// <see cref="ISkillPromptProvider"/>, and <see cref="ISkillResourceProvider"/>)
     /// as singletons in the DI container. Does <b>not</b> eagerly load or attach them to an MCP server.
     /// The consumer is responsible for resolving providers and attaching them as needed.
     /// </summary>
@@ -29,7 +29,7 @@ public static class AgentSkillMcpExtensions
 
     /// <summary>
     /// Registers the Agent Skill services (<see cref="ISkillFileStore"/>,
-    /// <see cref="SkillPromptProvider"/>, and <see cref="SkillResourceProvider"/>)
+    /// <see cref="ISkillPromptProvider"/>, and <see cref="ISkillResourceProvider"/>)
     /// as singletons in the DI container with optional configuration.
     /// Does <b>not</b> eagerly load or attach them to an MCP server.
     /// </summary>
@@ -51,7 +51,9 @@ public static class AgentSkillMcpExtensions
 
         services.AddSingleton<ISkillFileStore>(new PhysicalSkillFileStore(skillsPath));
         services.AddSingleton<SkillPromptProvider>();
+        services.AddSingleton<ISkillPromptProvider>(services => services.GetRequiredService<SkillPromptProvider>());
         services.AddSingleton<SkillResourceProvider>();
+        services.AddSingleton<ISkillResourceProvider>(services => services.GetRequiredService<SkillResourceProvider>());
 
         return services;
     }
@@ -59,8 +61,8 @@ public static class AgentSkillMcpExtensions
     /// <summary>
     /// Registers Agent Skills as MCP prompts and resources.
     /// Skills are loaded at runtime from the configured skills directory.
-    /// The <see cref="ISkillFileStore"/>, <see cref="SkillPromptProvider"/>,
-    /// and <see cref="SkillResourceProvider"/> are registered as singletons.
+    /// The <see cref="ISkillFileStore"/>, <see cref="ISkillPromptProvider"/>,
+    /// and <see cref="ISkillResourceProvider"/> are registered as singletons.
     /// Prompts and resources are loaded directly during configuration and registered
     /// with the MCP server builder.
     /// </summary>
