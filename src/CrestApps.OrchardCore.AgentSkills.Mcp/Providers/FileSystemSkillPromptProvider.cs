@@ -5,9 +5,10 @@ using ModelContextProtocol.Server;
 namespace CrestApps.OrchardCore.AgentSkills.Mcp.Providers;
 
 /// <summary>
-/// Loads Orchard Core skill prompt files via <see cref="IMcpResourceFileStore"/>
+/// Loads Orchard Core skill files via <see cref="IMcpResourceFileStore"/>
 /// and produces <see cref="McpServerPrompt"/> instances for MCP registration.
-/// Each <c>prompts.md</c> file found in a skill directory becomes a prompt.
+/// Each <c>SKILL.md</c> file found in a skill directory becomes a prompt
+/// (using the body content after the YAML front-matter).
 /// Registered as a singleton — results are lazily loaded and cached.
 /// </summary>
 public sealed class FileSystemSkillPromptProvider
@@ -27,8 +28,8 @@ public sealed class FileSystemSkillPromptProvider
     }
 
     /// <summary>
-    /// Discovers all <c>prompts.md</c> files under the skills directory and
-    /// creates MCP prompt instances from their contents.
+    /// Discovers all <c>SKILL.md</c> files under the skills directory and
+    /// creates MCP prompt instances from the body content (after front-matter).
     /// Results are lazily loaded and cached after the first call.
     /// </summary>
     public async Task<IReadOnlyList<McpServerPrompt>> GetPromptsAsync()
@@ -47,13 +48,13 @@ public sealed class FileSystemSkillPromptProvider
                 continue;
             }
 
-            var skillName = skillDir.Name;
-            var promptPath = NormalizePath($"{skillName}/prompts.md");
-            var promptInfo = await _fileStore.GetFileInfoAsync(promptPath);
+            var skillDirName = skillDir.Name;
+            var skillPath = NormalizePath($"{skillDirName}/SKILL.md");
+            var skillInfo = await _fileStore.GetFileInfoAsync(skillPath);
 
-            if (promptInfo is null)
+            if (skillInfo is null)
             {
-                _logger.LogDebug("No prompts.md found for skill '{SkillName}', skipping.", skillName);
+                _logger.LogDebug("No SKILL.md found for skill '{SkillName}', skipping.", skillDirName);
                 continue;
             }
 
@@ -61,28 +62,42 @@ public sealed class FileSystemSkillPromptProvider
 
             try
             {
-                await using var stream = await _fileStore.GetFileStreamAsync(promptPath);
+                await using var stream = await _fileStore.GetFileStreamAsync(skillPath);
                 using var reader = new StreamReader(stream);
                 content = await reader.ReadToEndAsync();
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
-                _logger.LogWarning(ex, "Failed to read prompts.md for skill '{SkillName}'.", skillName);
+                _logger.LogWarning(ex, "Failed to read SKILL.md for skill '{SkillName}'.", skillDirName);
                 continue;
             }
 
             if (string.IsNullOrWhiteSpace(content))
             {
-                _logger.LogWarning("prompts.md for skill '{SkillName}' is empty, skipping.", skillName);
+                _logger.LogWarning("SKILL.md for skill '{SkillName}' is empty, skipping.", skillDirName);
+                continue;
+            }
+
+            if (!SkillFrontMatterParser.TryParse(content, out var name, out var description, out var body))
+            {
+                _logger.LogWarning(
+                    "SKILL.md for skill '{SkillName}' has invalid or missing front-matter (name and description are required), skipping.",
+                    skillDirName);
+                continue;
+            }
+
+            if (string.IsNullOrWhiteSpace(body))
+            {
+                _logger.LogWarning("SKILL.md for skill '{SkillName}' has no body content after front-matter, skipping.", skillDirName);
                 continue;
             }
 
             var prompt = McpServerPrompt.Create(
-                () => content,
+                () => body,
                 new McpServerPromptCreateOptions
                 {
-                    Name = skillName,
-                    Description = $"Orchard Core prompt template for {skillName}",
+                    Name = name,
+                    Description = description,
                 });
 
             prompts.Add(prompt);
