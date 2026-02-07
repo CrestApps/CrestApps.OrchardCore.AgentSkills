@@ -7,7 +7,7 @@ namespace CrestApps.OrchardCore.AgentSkills.Mcp.Providers;
 /// <summary>
 /// Loads Orchard Core skill resource files via <see cref="IMcpResourceFileStore"/>
 /// and produces <see cref="McpServerResource"/> instances for MCP registration.
-/// Each <c>skill.yaml</c> and <c>examples/*.md</c> file becomes a resource.
+/// Each <c>SKILL.md</c> and <c>references/*.md</c> file becomes a resource.
 /// Registered as a singleton — results are lazily loaded and cached.
 /// </summary>
 public sealed class FileSystemSkillResourceProvider
@@ -27,7 +27,7 @@ public sealed class FileSystemSkillResourceProvider
     }
 
     /// <summary>
-    /// Discovers all <c>skill.yaml</c> and example files under the skills
+    /// Discovers all <c>SKILL.md</c> and reference files under the skills
     /// directory and creates MCP resource instances from their contents.
     /// Results are lazily loaded and cached after the first call.
     /// </summary>
@@ -47,11 +47,11 @@ public sealed class FileSystemSkillResourceProvider
                 continue;
             }
 
-            var skillName = skillDir.Name;
+            var skillDirName = skillDir.Name;
 
-            // Register skill.yaml as a resource.
-            var skillYamlPath = NormalizePath($"{skillName}/skill.yaml");
-            var skillInfo = await _fileStore.GetFileInfoAsync(skillYamlPath);
+            // Register SKILL.md as a resource.
+            var skillMdPath = NormalizePath($"{skillDirName}/SKILL.md");
+            var skillInfo = await _fileStore.GetFileInfoAsync(skillMdPath);
 
             if (skillInfo is not null)
             {
@@ -59,19 +59,25 @@ public sealed class FileSystemSkillResourceProvider
 
                 try
                 {
-                    await using var stream = await _fileStore.GetFileStreamAsync(skillYamlPath);
+                    await using var stream = await _fileStore.GetFileStreamAsync(skillMdPath);
                     using var reader = new StreamReader(stream);
                     skillContent = await reader.ReadToEndAsync();
                 }
                 catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
                 {
-                    _logger.LogWarning(ex, "Failed to read skill.yaml for skill '{SkillName}'.", skillName);
+                    _logger.LogWarning(ex, "Failed to read SKILL.md for skill '{SkillName}'.", skillDirName);
                     continue;
                 }
 
                 if (string.IsNullOrWhiteSpace(skillContent))
                 {
-                    _logger.LogWarning("skill.yaml for skill '{SkillName}' is empty, skipping.", skillName);
+                    _logger.LogWarning("SKILL.md for skill '{SkillName}' is empty, skipping.", skillDirName);
+                }
+                else if (!SkillFrontMatterParser.TryParse(skillContent, out var name, out var description, out _))
+                {
+                    _logger.LogWarning(
+                        "SKILL.md for skill '{SkillName}' has invalid or missing front-matter (name and description are required), skipping.",
+                        skillDirName);
                 }
                 else
                 {
@@ -79,29 +85,29 @@ public sealed class FileSystemSkillResourceProvider
                         () => skillContent,
                         new McpServerResourceCreateOptions
                         {
-                            Name = $"{skillName}/skill.yaml",
-                            Description = $"Orchard Core skill definition for {skillName}",
-                            UriTemplate = $"skills://{skillName}/skill.yaml",
-                            MimeType = "text/yaml",
+                            Name = $"{name}/SKILL.md",
+                            Description = description,
+                            UriTemplate = $"skills://{name}/SKILL.md",
+                            MimeType = "text/markdown",
                         });
                     resources.Add(resource);
                 }
             }
             else
             {
-                _logger.LogDebug("No skill.yaml found for skill '{SkillName}'.", skillName);
+                _logger.LogDebug("No SKILL.md found for skill '{SkillName}'.", skillDirName);
             }
 
-            // Register example *.md files as resources.
-            var examplesPath = NormalizePath($"{skillName}/examples");
-            var examplesDir = await _fileStore.GetDirectoryInfoAsync(examplesPath);
+            // Register reference *.md files as resources.
+            var referencesPath = NormalizePath($"{skillDirName}/references");
+            var referencesDir = await _fileStore.GetDirectoryInfoAsync(referencesPath);
 
-            if (examplesDir is null)
+            if (referencesDir is null)
             {
                 continue;
             }
 
-            await foreach (var entry in _fileStore.GetDirectoryContentAsync(examplesPath, includeSubDirectories: false))
+            await foreach (var entry in _fileStore.GetDirectoryContentAsync(referencesPath, includeSubDirectories: false))
             {
                 if (entry.IsDirectory || !entry.Name.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
                 {
@@ -110,33 +116,33 @@ public sealed class FileSystemSkillResourceProvider
 
                 var fileName = entry.Name;
                 var filePath = NormalizePath(entry.Path);
-                string exampleContent;
+                string referenceContent;
 
                 try
                 {
                     await using var stream = await _fileStore.GetFileStreamAsync(filePath);
                     using var reader = new StreamReader(stream);
-                    exampleContent = await reader.ReadToEndAsync();
+                    referenceContent = await reader.ReadToEndAsync();
                 }
                 catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
                 {
-                    _logger.LogWarning(ex, "Failed to read example file '{FileName}' for skill '{SkillName}'.", fileName, skillName);
+                    _logger.LogWarning(ex, "Failed to read reference file '{FileName}' for skill '{SkillName}'.", fileName, skillDirName);
                     continue;
                 }
 
-                if (string.IsNullOrWhiteSpace(exampleContent))
+                if (string.IsNullOrWhiteSpace(referenceContent))
                 {
-                    _logger.LogDebug("Example file '{FileName}' for skill '{SkillName}' is empty, skipping.", fileName, skillName);
+                    _logger.LogDebug("Reference file '{FileName}' for skill '{SkillName}' is empty, skipping.", fileName, skillDirName);
                     continue;
                 }
 
                 var resource = McpServerResource.Create(
-                    () => exampleContent,
+                    () => referenceContent,
                     new McpServerResourceCreateOptions
                     {
-                        Name = $"{skillName}/examples/{fileName}",
-                        Description = $"Orchard Core example for {skillName}",
-                        UriTemplate = $"skills://{skillName}/examples/{fileName}",
+                        Name = $"{skillDirName}/references/{fileName}",
+                        Description = $"Orchard Core reference for {skillDirName}",
+                        UriTemplate = $"skills://{skillDirName}/references/{fileName}",
                         MimeType = "text/markdown",
                     });
                 resources.Add(resource);
