@@ -1,4 +1,4 @@
-# Contributing to CrestApps Orchard Core Agent Skills
+# Contributing to CrestApps.AgentSkills
 
 Thank you for your interest in contributing! Whether you're fixing bugs, adding new skills, or improving documentation, your help is appreciated.
 
@@ -11,8 +11,8 @@ Before getting started, please read through our [README](../README.md) to famili
 Start by cloning the repository and switching to the `main` branch:
 
 ```bash
-git clone https://github.com/CrestApps/CrestApps.OrchardCore.AgentSkills.git
-cd CrestApps.OrchardCore.AgentSkills
+git clone https://github.com/CrestApps/CrestApps.AgentSkills.git
+cd CrestApps.AgentSkills
 git checkout main
 ```
 
@@ -34,7 +34,7 @@ git checkout main
 
 We welcome contributions of all kinds! Here's how you can find something meaningful to contribute:
 
-* Browse [open issues](https://github.com/CrestApps/CrestApps.OrchardCore.AgentSkills/issues) to see what's currently being worked on or needs help.
+* Browse [open issues](https://github.com/CrestApps/CrestApps.AgentSkills/issues) to see what's currently being worked on or needs help.
 
 If you have an idea or improvement that's not tracked yet, please open a new issue first and discuss it with the maintainers before starting work.
 
@@ -89,6 +89,14 @@ Skills are validated automatically in CI. Before submitting a PR, verify your sk
 dotnet build -c Release -warnaserror /p:TreatWarningsAsErrors=true /p:RunAnalyzers=true /p:NuGetAudit=false
 dotnet test -c Release --verbosity normal
 ```
+
+### Submitting a New Skill PR
+
+1. Open a **New Skill Request** issue (or confirm one already exists): <https://github.com/CrestApps/CrestApps.AgentSkills/issues/new?template=skill_request.md>.
+2. Create a branch and add the new skill directory under `src/skills/.agents/skills/`.
+3. Ensure the `SKILL.md` front-matter matches the directory name and include any supporting `references/` files.
+4. Run the validation steps above.
+5. Submit a PR that links the issue (e.g., `Fix #123`) and summarizes the new skill.
 
 ---
 

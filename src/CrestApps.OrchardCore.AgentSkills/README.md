@@ -4,6 +4,10 @@ A development-only NuGet package that distributes shared **AI agent instruction 
 
 When installed, agent skill files are automatically copied into the **solution-root** `.agents/skills` folder. There is **no runtime dependency** — this package is used purely for development and AI tooling guidance.
 
+## Role in CrestApps.AgentSkills
+
+`CrestApps.OrchardCore.AgentSkills` is the Orchard Core design-time project in the CrestApps.AgentSkills repository. It solves the problem of keeping `.agents/skills` in sync by copying the packaged Orchard Core skills into your solution on build.
+
 ## Install
 
 ```bash

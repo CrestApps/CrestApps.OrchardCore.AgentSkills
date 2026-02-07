@@ -4,6 +4,10 @@ A runtime NuGet package that exposes Orchard Core agent skills to **MCP (Model C
 
 This package loads skill files at runtime via OrchardCore's `FileSystemStore` and registers them as MCP prompts and resources through dedicated provider classes. It does **not** copy files to the solution — use the companion `CrestApps.OrchardCore.AgentSkills` package for local AI authoring.
 
+## Role in CrestApps.AgentSkills
+
+`CrestApps.OrchardCore.AgentSkills.Mcp` is the Orchard Core runtime project in the CrestApps.AgentSkills repository. It solves the problem of exposing Orchard Core skills via MCP by loading the packaged skills and wiring them into an MCP server at runtime.
+
 ## Install
 
 ```bash
