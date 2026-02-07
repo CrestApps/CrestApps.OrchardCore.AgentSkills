@@ -1,4 +1,4 @@
-namespace CrestApps.OrchardCore.AgentSkills.Mcp.Services;
+namespace CrestApps.AgentSkills.Mcp.Services;
 
 /// <summary>
 /// Parses YAML front-matter from SKILL.md files.

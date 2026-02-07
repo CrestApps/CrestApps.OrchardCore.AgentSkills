@@ -3,13 +3,13 @@ using CrestApps.AgentSkills.Mcp.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
-namespace CrestApps.OrchardCore.AgentSkills.Mcp.Tests;
+namespace CrestApps.AgentSkills.Mcp.Tests;
 
-public sealed class FileSystemSkillPromptProviderTests : IDisposable
+public sealed class SkillPromptProviderTests : IDisposable
 {
     private readonly string _tempDir;
 
-    public FileSystemSkillPromptProviderTests()
+    public SkillPromptProviderTests()
     {
         _tempDir = Path.Combine(Path.GetTempPath(), $"agent-skills-tests-{Guid.NewGuid():N}");
         Directory.CreateDirectory(_tempDir);
@@ -24,9 +24,8 @@ public sealed class FileSystemSkillPromptProviderTests : IDisposable
     }
 
     [Fact]
-    public async Task GetPromptsAsync_ReturnsPromptsFromSkillDirectories()
+    public async Task GetPromptsAsync_ReturnsPromptsFromMarkdownSkillFiles()
     {
-        // Arrange: create a skill directory with a valid SKILL.md
         var skillDir = Path.Combine(_tempDir, "test-skill");
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(
@@ -37,18 +36,51 @@ public sealed class FileSystemSkillPromptProviderTests : IDisposable
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
-        // Act
         var prompts = await provider.GetPromptsAsync();
 
-        // Assert
         Assert.Single(prompts);
     }
 
     [Fact]
-    public async Task GetPromptsAsync_SkipsDirectoriesWithoutSkillMd()
+    public async Task GetPromptsAsync_ReturnsPromptsFromYamlSkillFiles()
     {
-        // Arrange: create a skill directory without SKILL.md
-        var skillDir = Path.Combine(_tempDir, "no-skill-md");
+        var skillDir = Path.Combine(_tempDir, "yaml-skill");
+        Directory.CreateDirectory(skillDir);
+        await File.WriteAllTextAsync(
+            Path.Combine(skillDir, "SKILL.yaml"),
+            "name: yaml-skill\ndescription: A YAML skill.\nbody: |\n  # YAML Prompt\n  This is a yaml test.");
+
+        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var provider = new SkillPromptProvider(
+            fileStore, NullLogger<SkillPromptProvider>.Instance);
+
+        var prompts = await provider.GetPromptsAsync();
+
+        Assert.Single(prompts);
+    }
+
+    [Fact]
+    public async Task GetPromptsAsync_ReturnsPromptsFromYmlSkillFiles()
+    {
+        var skillDir = Path.Combine(_tempDir, "yml-skill");
+        Directory.CreateDirectory(skillDir);
+        await File.WriteAllTextAsync(
+            Path.Combine(skillDir, "SKILL.yml"),
+            "name: yml-skill\ndescription: A YML skill.\nbody: |\n  # YML Prompt\n  This is a yml test.");
+
+        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var provider = new SkillPromptProvider(
+            fileStore, NullLogger<SkillPromptProvider>.Instance);
+
+        var prompts = await provider.GetPromptsAsync();
+
+        Assert.Single(prompts);
+    }
+
+    [Fact]
+    public async Task GetPromptsAsync_SkipsDirectoriesWithoutSkillFile()
+    {
+        var skillDir = Path.Combine(_tempDir, "no-skill");
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(Path.Combine(skillDir, "README.md"), "# Not a skill");
 
@@ -56,17 +88,14 @@ public sealed class FileSystemSkillPromptProviderTests : IDisposable
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
-        // Act
         var prompts = await provider.GetPromptsAsync();
 
-        // Assert
         Assert.Empty(prompts);
     }
 
     [Fact]
-    public async Task GetPromptsAsync_SkipsSkillMdWithInvalidFrontMatter()
+    public async Task GetPromptsAsync_SkipsSkillWithInvalidFrontMatter()
     {
-        // Arrange: SKILL.md without proper front-matter
         var skillDir = Path.Combine(_tempDir, "invalid-skill");
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(
@@ -77,38 +106,50 @@ public sealed class FileSystemSkillPromptProviderTests : IDisposable
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
-        // Act
         var prompts = await provider.GetPromptsAsync();
 
-        // Assert
         Assert.Empty(prompts);
     }
 
     [Fact]
-    public async Task GetPromptsAsync_SkipsSkillMdWithMissingRequiredFields()
+    public async Task GetPromptsAsync_SkipsSkillWithMissingRequiredFields()
     {
-        // Arrange: SKILL.md with front-matter but missing description
         var skillDir = Path.Combine(_tempDir, "incomplete-skill");
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(
-            Path.Combine(skillDir, "SKILL.md"),
-            "---\nname: incomplete-skill\n---\n# Some content");
+            Path.Combine(skillDir, "SKILL.yaml"),
+            "name: incomplete-skill");
 
         var fileStore = new PhysicalSkillFileStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
-        // Act
         var prompts = await provider.GetPromptsAsync();
 
-        // Assert
+        Assert.Empty(prompts);
+    }
+
+    [Fact]
+    public async Task GetPromptsAsync_SkipsYamlSkillWithNoBody()
+    {
+        var skillDir = Path.Combine(_tempDir, "no-body-skill");
+        Directory.CreateDirectory(skillDir);
+        await File.WriteAllTextAsync(
+            Path.Combine(skillDir, "SKILL.yaml"),
+            "name: no-body-skill\ndescription: A skill without body.");
+
+        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var provider = new SkillPromptProvider(
+            fileStore, NullLogger<SkillPromptProvider>.Instance);
+
+        var prompts = await provider.GetPromptsAsync();
+
         Assert.Empty(prompts);
     }
 
     [Fact]
     public async Task GetPromptsAsync_CachesResultsOnSubsequentCalls()
     {
-        // Arrange
         var skillDir = Path.Combine(_tempDir, "cached-skill");
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(
@@ -119,33 +160,27 @@ public sealed class FileSystemSkillPromptProviderTests : IDisposable
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
-        // Act
         var first = await provider.GetPromptsAsync();
         var second = await provider.GetPromptsAsync();
 
-        // Assert: same reference returned (cached)
         Assert.Same(first, second);
     }
 
     [Fact]
     public async Task GetPromptsAsync_ReturnsEmptyForEmptyDirectory()
     {
-        // Arrange: empty directory, no skill subdirectories
         var fileStore = new PhysicalSkillFileStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
-        // Act
         var prompts = await provider.GetPromptsAsync();
 
-        // Assert
         Assert.Empty(prompts);
     }
 
     [Fact]
-    public async Task GetPromptsAsync_SkipsEmptySkillMdFiles()
+    public async Task GetPromptsAsync_SkipsEmptySkillFiles()
     {
-        // Arrange: create a skill directory with an empty SKILL.md
         var skillDir = Path.Combine(_tempDir, "empty-skill");
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(Path.Combine(skillDir, "SKILL.md"), "   ");
@@ -154,10 +189,30 @@ public sealed class FileSystemSkillPromptProviderTests : IDisposable
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
-        // Act
         var prompts = await provider.GetPromptsAsync();
 
-        // Assert
         Assert.Empty(prompts);
+    }
+
+    [Fact]
+    public async Task GetPromptsAsync_PrefersMarkdownOverYaml()
+    {
+        // Both SKILL.md and SKILL.yaml exist — SKILL.md should be preferred
+        var skillDir = Path.Combine(_tempDir, "both-formats");
+        Directory.CreateDirectory(skillDir);
+        await File.WriteAllTextAsync(
+            Path.Combine(skillDir, "SKILL.md"),
+            "---\nname: md-skill\ndescription: From Markdown.\n---\n# MD Body");
+        await File.WriteAllTextAsync(
+            Path.Combine(skillDir, "SKILL.yaml"),
+            "name: yaml-skill\ndescription: From YAML.\nbody: YAML Body");
+
+        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var provider = new SkillPromptProvider(
+            fileStore, NullLogger<SkillPromptProvider>.Instance);
+
+        var prompts = await provider.GetPromptsAsync();
+
+        Assert.Single(prompts);
     }
 }

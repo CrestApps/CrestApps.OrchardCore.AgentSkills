@@ -1,10 +1,9 @@
-namespace CrestApps.OrchardCore.AgentSkills.Mcp;
+namespace CrestApps.AgentSkills.Mcp;
 
 /// <summary>
-/// Configuration options for Orchard Core agent skills in MCP.
-/// Wraps <see cref="CrestApps.AgentSkills.Mcp.AgentSkillOptions"/> for Orchard Core–specific usage.
+/// Configuration options for the Agent Skills MCP engine.
 /// </summary>
-public sealed class OrchardCoreSkillOptions
+public sealed class AgentSkillOptions
 {
     /// <summary>
     /// Gets or sets the path to the skills directory.

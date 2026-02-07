@@ -3,13 +3,13 @@ using CrestApps.AgentSkills.Mcp.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
-namespace CrestApps.OrchardCore.AgentSkills.Mcp.Tests;
+namespace CrestApps.AgentSkills.Mcp.Tests;
 
-public sealed class FileSystemSkillResourceProviderTests : IDisposable
+public sealed class SkillResourceProviderTests : IDisposable
 {
     private readonly string _tempDir;
 
-    public FileSystemSkillResourceProviderTests()
+    public SkillResourceProviderTests()
     {
         _tempDir = Path.Combine(Path.GetTempPath(), $"agent-skills-tests-{Guid.NewGuid():N}");
         Directory.CreateDirectory(_tempDir);
@@ -24,9 +24,8 @@ public sealed class FileSystemSkillResourceProviderTests : IDisposable
     }
 
     [Fact]
-    public async Task GetResourcesAsync_ReturnsSkillMdResources()
+    public async Task GetResourcesAsync_ReturnsMarkdownSkillResources()
     {
-        // Arrange
         var skillDir = Path.Combine(_tempDir, "test-skill");
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(
@@ -37,17 +36,50 @@ public sealed class FileSystemSkillResourceProviderTests : IDisposable
         var provider = new SkillResourceProvider(
             fileStore, NullLogger<SkillResourceProvider>.Instance);
 
-        // Act
         var resources = await provider.GetResourcesAsync();
 
-        // Assert
+        Assert.Single(resources);
+    }
+
+    [Fact]
+    public async Task GetResourcesAsync_ReturnsYamlSkillResources()
+    {
+        var skillDir = Path.Combine(_tempDir, "yaml-skill");
+        Directory.CreateDirectory(skillDir);
+        await File.WriteAllTextAsync(
+            Path.Combine(skillDir, "SKILL.yaml"),
+            "name: yaml-skill\ndescription: A YAML skill.\nbody: Some body");
+
+        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var provider = new SkillResourceProvider(
+            fileStore, NullLogger<SkillResourceProvider>.Instance);
+
+        var resources = await provider.GetResourcesAsync();
+
+        Assert.Single(resources);
+    }
+
+    [Fact]
+    public async Task GetResourcesAsync_ReturnsYmlSkillResources()
+    {
+        var skillDir = Path.Combine(_tempDir, "yml-skill");
+        Directory.CreateDirectory(skillDir);
+        await File.WriteAllTextAsync(
+            Path.Combine(skillDir, "SKILL.yml"),
+            "name: yml-skill\ndescription: A YML skill.\nbody: Some body");
+
+        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var provider = new SkillResourceProvider(
+            fileStore, NullLogger<SkillResourceProvider>.Instance);
+
+        var resources = await provider.GetResourcesAsync();
+
         Assert.Single(resources);
     }
 
     [Fact]
     public async Task GetResourcesAsync_ReturnsReferenceMdResources()
     {
-        // Arrange
         var skillDir = Path.Combine(_tempDir, "ref-skill");
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(
@@ -63,17 +95,15 @@ public sealed class FileSystemSkillResourceProviderTests : IDisposable
         var provider = new SkillResourceProvider(
             fileStore, NullLogger<SkillResourceProvider>.Instance);
 
-        // Act
         var resources = await provider.GetResourcesAsync();
 
-        // Assert: 1 SKILL.md + 2 reference .md files
+        // 1 SKILL.md + 2 reference .md files
         Assert.Equal(3, resources.Count);
     }
 
     [Fact]
     public async Task GetResourcesAsync_IgnoresNonMdReferenceFiles()
     {
-        // Arrange
         var skillDir = Path.Combine(_tempDir, "filter-skill");
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(
@@ -89,17 +119,15 @@ public sealed class FileSystemSkillResourceProviderTests : IDisposable
         var provider = new SkillResourceProvider(
             fileStore, NullLogger<SkillResourceProvider>.Instance);
 
-        // Act
         var resources = await provider.GetResourcesAsync();
 
-        // Assert: 1 SKILL.md + 1 .md reference (json ignored)
+        // 1 SKILL.md + 1 .md reference (json ignored)
         Assert.Equal(2, resources.Count);
     }
 
     [Fact]
-    public async Task GetResourcesAsync_SkipsSkillMdWithInvalidFrontMatter()
+    public async Task GetResourcesAsync_SkipsInvalidSkillFiles()
     {
-        // Arrange: SKILL.md without proper front-matter
         var skillDir = Path.Combine(_tempDir, "invalid-skill");
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(
@@ -110,17 +138,14 @@ public sealed class FileSystemSkillResourceProviderTests : IDisposable
         var provider = new SkillResourceProvider(
             fileStore, NullLogger<SkillResourceProvider>.Instance);
 
-        // Act
         var resources = await provider.GetResourcesAsync();
 
-        // Assert
         Assert.Empty(resources);
     }
 
     [Fact]
     public async Task GetResourcesAsync_CachesResultsOnSubsequentCalls()
     {
-        // Arrange
         var skillDir = Path.Combine(_tempDir, "cached-skill");
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(
@@ -131,33 +156,27 @@ public sealed class FileSystemSkillResourceProviderTests : IDisposable
         var provider = new SkillResourceProvider(
             fileStore, NullLogger<SkillResourceProvider>.Instance);
 
-        // Act
         var first = await provider.GetResourcesAsync();
         var second = await provider.GetResourcesAsync();
 
-        // Assert: same reference returned (cached)
         Assert.Same(first, second);
     }
 
     [Fact]
     public async Task GetResourcesAsync_ReturnsEmptyForEmptyDirectory()
     {
-        // Arrange: empty directory
         var fileStore = new PhysicalSkillFileStore(_tempDir);
         var provider = new SkillResourceProvider(
             fileStore, NullLogger<SkillResourceProvider>.Instance);
 
-        // Act
         var resources = await provider.GetResourcesAsync();
 
-        // Assert
         Assert.Empty(resources);
     }
 
     [Fact]
-    public async Task GetResourcesAsync_SkipsEmptySkillMdFiles()
+    public async Task GetResourcesAsync_SkipsEmptySkillFiles()
     {
-        // Arrange
         var skillDir = Path.Combine(_tempDir, "empty-skill");
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(Path.Combine(skillDir, "SKILL.md"), "   ");
@@ -166,10 +185,8 @@ public sealed class FileSystemSkillResourceProviderTests : IDisposable
         var provider = new SkillResourceProvider(
             fileStore, NullLogger<SkillResourceProvider>.Instance);
 
-        // Act
         var resources = await provider.GetResourcesAsync();
 
-        // Assert: empty file should be skipped
         Assert.Empty(resources);
     }
 }
