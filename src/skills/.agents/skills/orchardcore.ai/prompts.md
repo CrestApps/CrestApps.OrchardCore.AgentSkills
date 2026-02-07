@@ -51,9 +51,13 @@ You are an Orchard Core expert. Generate code and configuration for AI integrati
         "OpenAI": {
           "DefaultConnectionName": "default",
           "DefaultDeploymentName": "gpt-4o",
+          "DefaultIntentDeploymentName": "gpt-4o-mini",
+          "DefaultEmbeddingDeploymentName": "",
+          "DefaultImagesDeploymentName": "",
           "Connections": {
             "default": {
-              "DefaultDeploymentName": "gpt-4o"
+              "DefaultDeploymentName": "gpt-4o",
+              "DefaultIntentDeploymentName": "gpt-4o-mini"
             }
           }
         }
