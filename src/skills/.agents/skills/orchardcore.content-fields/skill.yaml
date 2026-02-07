@@ -1,0 +1,41 @@
+name: orchardcore.content-fields
+version: 1.0.0
+description: >
+  Skill for adding and configuring content fields in Orchard Core.
+  Covers every built-in field type with all available settings,
+  editor options, display modes, and migration code patterns.
+author: CrestApps
+tags:
+  - orchard-core
+  - content-fields
+  - content-management
+  - fields
+  - settings
+inputs:
+  - name: field_type
+    type: string
+    description: The type of field to add (e.g., TextField, NumericField, MediaField).
+    required: true
+  - name: field_name
+    type: string
+    description: The technical name of the field.
+    required: true
+  - name: display_name
+    type: string
+    description: The display name of the field.
+    required: true
+  - name: part_name
+    type: string
+    description: The content part to add the field to.
+    required: true
+  - name: settings
+    type: object
+    description: Field-specific settings.
+    required: false
+outputs:
+  - name: migration_code
+    type: string
+    description: C# migration code to add and configure the field.
+  - name: recipe_json
+    type: string
+    description: JSON recipe to add the field via a recipe.

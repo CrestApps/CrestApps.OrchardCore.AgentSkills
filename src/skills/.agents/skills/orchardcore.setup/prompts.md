@@ -82,7 +82,7 @@ app.Run();
 
 ### Adding CMS Modules to the Project
 
-Add NuGet packages for the modules you need:
+Add NuGet packages for the modules you need. **All modules** — whether from OrchardCore directly, CrestApps, Lombiq, or any community source — must be installed in the **web project** (the startup project of the solution):
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk.Web">
@@ -93,6 +93,10 @@ Add NuGet packages for the modules you need:
 
   <ItemGroup>
     <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="2.*" />
+
+    <!-- Third-party modules are also added to the web project -->
+    <PackageReference Include="CrestApps.OrchardCore.AI" Version="1.*" />
+    <PackageReference Include="Lombiq.HelpfulExtensions.OrchardCore" Version="1.*" />
   </ItemGroup>
 
 </Project>
@@ -100,12 +104,13 @@ Add NuGet packages for the modules you need:
 
 ### Adding a Custom CMS Module to the Web Project
 
-To add a local CMS module to the web project:
+To add a local CMS module to the web project (your own or any third-party module):
 
 ```xml
 <ItemGroup>
-  <!-- Reference a local module project -->
+  <!-- Reference a local module project in the web project -->
   <ProjectReference Include="../MyModule/MyModule.csproj" />
+  <ProjectReference Include="../ThirdParty.Module/ThirdParty.Module.csproj" />
 </ItemGroup>
 ```
 

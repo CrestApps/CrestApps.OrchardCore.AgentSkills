@@ -12,6 +12,33 @@ You are an Orchard Core expert. Generate the scaffolding for a new Orchard Core 
 - Use `Startup` classes to register services, routes, and navigation.
 - Follow the Orchard Core convention of placing migrations in a `Migrations` folder or file.
 - Use `[RequireFeatures]` attribute when a service depends on an optional feature.
+- Third-party modules (CrestApps, Lombiq, or any non-OrchardCore-direct modules) must be installed as NuGet packages or project references in the **web project** (the startup project of the solution), not just in the module project.
+- Always seal classes.
+
+### Installing Third-Party Modules
+
+Third-party modules are installed by adding NuGet packages or project references to the web project:
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <!-- Orchard Core base -->
+    <PackageReference Include="OrchardCore.Application.Cms.Targets" Version="2.*" />
+
+    <!-- Third-party modules must be in the web project -->
+    <PackageReference Include="CrestApps.OrchardCore.AI" Version="1.*" />
+    <PackageReference Include="Lombiq.HelpfulExtensions.OrchardCore" Version="1.*" />
+  </ItemGroup>
+</Project>
+```
+
+For local module projects:
+
+```xml
+<ItemGroup>
+  <ProjectReference Include="../ThirdParty.Module/ThirdParty.Module.csproj" />
+</ItemGroup>
+```
 
 ### Manifest Pattern
 

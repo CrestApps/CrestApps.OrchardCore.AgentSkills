@@ -1,0 +1,33 @@
+name: orchardcore.content-parts
+version: 1.0.0
+description: >
+  Skill for adding and configuring built-in content parts in Orchard Core.
+  Covers every built-in content part with all available settings,
+  migration code patterns, and recipe configuration.
+author: CrestApps
+tags:
+  - orchard-core
+  - content-parts
+  - content-management
+  - parts
+  - settings
+inputs:
+  - name: part_name
+    type: string
+    description: The name of the content part to attach (e.g., TitlePart, AutoroutePart).
+    required: true
+  - name: content_type
+    type: string
+    description: The content type to attach the part to.
+    required: true
+  - name: settings
+    type: object
+    description: Part-specific settings.
+    required: false
+outputs:
+  - name: migration_code
+    type: string
+    description: C# migration code to attach and configure the part.
+  - name: recipe_json
+    type: string
+    description: JSON recipe to attach the part via a recipe.
