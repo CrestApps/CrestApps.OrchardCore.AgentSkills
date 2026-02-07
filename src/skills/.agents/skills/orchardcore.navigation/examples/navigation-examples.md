@@ -6,7 +6,7 @@
 using Microsoft.Extensions.Localization;
 using OrchardCore.Navigation;
 
-public class AdminMenu : INavigationProvider
+public sealed class AdminMenu : INavigationProvider
 {
     private readonly IStringLocalizer S;
 
@@ -40,57 +40,61 @@ public class AdminMenu : INavigationProvider
 
 ```json
 {
-  "name": "Content",
-  "data": [
+  "steps": [
     {
-      "ContentItemId": "main-menu-001",
-      "ContentType": "Menu",
-      "DisplayText": "Main Menu",
-      "Latest": true,
-      "Published": true,
-      "TitlePart": {
-        "Title": "Main Menu"
-      },
-      "AliasPart": {
-        "Alias": "main-menu"
-      },
-      "MenuPart": {},
-      "MenuItemsListPart": {
-        "MenuItems": [
-          {
-            "ContentType": "LinkMenuItem",
-            "ContentItemId": "menu-item-home",
-            "LinkMenuItemPart": {
-              "Name": "Home",
-              "Url": "~/"
-            }
+      "name": "Content",
+      "data": [
+        {
+          "ContentItemId": "main-menu-001",
+          "ContentType": "Menu",
+          "DisplayText": "Main Menu",
+          "Latest": true,
+          "Published": true,
+          "TitlePart": {
+            "Title": "Main Menu"
           },
-          {
-            "ContentType": "LinkMenuItem",
-            "ContentItemId": "menu-item-blog",
-            "LinkMenuItemPart": {
-              "Name": "Blog",
-              "Url": "~/blog"
-            }
+          "AliasPart": {
+            "Alias": "main-menu"
           },
-          {
-            "ContentType": "LinkMenuItem",
-            "ContentItemId": "menu-item-about",
-            "LinkMenuItemPart": {
-              "Name": "About Us",
-              "Url": "~/about"
-            }
-          },
-          {
-            "ContentType": "LinkMenuItem",
-            "ContentItemId": "menu-item-contact",
-            "LinkMenuItemPart": {
-              "Name": "Contact",
-              "Url": "~/contact"
-            }
+          "MenuPart": {},
+          "MenuItemsListPart": {
+            "MenuItems": [
+              {
+                "ContentType": "LinkMenuItem",
+                "ContentItemId": "menu-item-home",
+                "LinkMenuItemPart": {
+                  "Name": "Home",
+                  "Url": "~/"
+                }
+              },
+              {
+                "ContentType": "LinkMenuItem",
+                "ContentItemId": "menu-item-blog",
+                "LinkMenuItemPart": {
+                  "Name": "Blog",
+                  "Url": "~/blog"
+                }
+              },
+              {
+                "ContentType": "LinkMenuItem",
+                "ContentItemId": "menu-item-about",
+                "LinkMenuItemPart": {
+                  "Name": "About Us",
+                  "Url": "~/about"
+                }
+              },
+              {
+                "ContentType": "LinkMenuItem",
+                "ContentItemId": "menu-item-contact",
+                "LinkMenuItemPart": {
+                  "Name": "Contact",
+                  "Url": "~/contact"
+                }
+              }
+            ]
           }
-        ]
-      }
+        }
+      ]
     }
   ]
 }

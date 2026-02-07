@@ -66,31 +66,35 @@ public int Create()
 
 ```json
 {
-  "name": "Layers",
-  "Layers": [
+  "steps": [
     {
-      "Name": "Always",
-      "LayerRule": {
-        "Conditions": [
-          {
-            "Name": "BooleanCondition",
-            "Value": true
-          }
-        ]
-      },
-      "Description": "Always visible"
-    },
-    {
-      "Name": "Homepage",
-      "LayerRule": {
-        "Conditions": [
-          {
-            "Name": "UrlCondition",
-            "Value": "^/$"
-          }
-        ]
-      },
-      "Description": "Homepage only"
+      "name": "Layers",
+      "Layers": [
+        {
+          "Name": "Always",
+          "LayerRule": {
+            "Conditions": [
+              {
+                "Name": "BooleanCondition",
+                "Value": true
+              }
+            ]
+          },
+          "Description": "Always visible"
+        },
+        {
+          "Name": "Homepage",
+          "LayerRule": {
+            "Conditions": [
+              {
+                "Name": "UrlCondition",
+                "Value": "^/$"
+              }
+            ]
+          },
+          "Description": "Homepage only"
+        }
+      ]
     }
   ]
 }
@@ -100,27 +104,31 @@ public int Create()
 
 ```json
 {
-  "name": "Content",
-  "data": [
+  "steps": [
     {
-      "ContentItemId": "widget-hero-home",
-      "ContentType": "HeroBanner",
-      "DisplayText": "Welcome Banner",
-      "Latest": true,
-      "Published": true,
-      "LayerMetadata": {
-        "Layer": "Homepage",
-        "Zone": "Header",
-        "Position": 0
-      },
-      "HeroBanner": {
-        "Heading": { "Text": "Welcome to Our Site" },
-        "Subheading": { "Text": "Discover amazing content" },
-        "CallToAction": {
-          "Url": "/about",
-          "Text": "Learn More"
+      "name": "Content",
+      "data": [
+        {
+          "ContentItemId": "widget-hero-home",
+          "ContentType": "HeroBanner",
+          "DisplayText": "Welcome Banner",
+          "Latest": true,
+          "Published": true,
+          "LayerMetadata": {
+            "Layer": "Homepage",
+            "Zone": "Header",
+            "Position": 0
+          },
+          "HeroBanner": {
+            "Heading": { "Text": "Welcome to Our Site" },
+            "Subheading": { "Text": "Discover amazing content" },
+            "CallToAction": {
+              "Url": "/about",
+              "Text": "Learn More"
+            }
+          }
         }
-      }
+      ]
     }
   ]
 }

@@ -15,7 +15,7 @@ ContentPublishedEvent (BlogPost) → IfElseTask (check author) → SendEmailTask
 ```csharp
 using OrchardCore.Workflows.Display;
 
-public class MyCustomTaskDisplayDriver : ActivityDisplayDriver<MyCustomTask>
+public sealed class MyCustomTaskDisplayDriver : ActivityDisplayDriver<MyCustomTask>
 {
     public override IDisplayResult Edit(MyCustomTask activity)
     {

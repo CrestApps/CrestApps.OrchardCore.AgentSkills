@@ -19,13 +19,17 @@ You are an Orchard Core expert. Generate configuration and code for managing med
 
 ```json
 {
-  "name": "Feature",
-  "enable": [
-    "OrchardCore.Media",
-    "OrchardCore.Media.Indexing",
-    "OrchardCore.Media.Cache"
-  ],
-  "disable": []
+  "steps": [
+    {
+      "name": "Feature",
+      "enable": [
+        "OrchardCore.Media",
+        "OrchardCore.Media.Indexing",
+        "OrchardCore.Media.Cache"
+      ],
+      "disable": []
+    }
+  ]
 }
 ```
 
@@ -64,17 +68,21 @@ You are an Orchard Core expert. Generate configuration and code for managing med
 
 ```json
 {
-  "name": "MediaProfiles",
-  "MediaProfiles": {
-    "{{ProfileName}}": {
-      "Hint": "{{Description}}",
-      "Width": 800,
-      "Height": 600,
-      "Mode": "Crop",
-      "Format": "webp",
-      "Quality": 80
+  "steps": [
+    {
+      "name": "MediaProfiles",
+      "MediaProfiles": {
+        "{{ProfileName}}": {
+          "Hint": "{{Description}}",
+          "Width": 800,
+          "Height": 600,
+          "Mode": "Crop",
+          "Format": "webp",
+          "Quality": 80
+        }
+      }
     }
-  }
+  ]
 }
 ```
 
@@ -107,7 +115,7 @@ Processing modes include:
 ```csharp
 using OrchardCore.Media.Processing;
 
-public class CustomMediaResizingFilter : IMediaEventHandler
+public sealed class CustomMediaResizingFilter : IMediaEventHandler
 {
     public Task MediaCreatingAsync(MediaCreatingContext context)
     {

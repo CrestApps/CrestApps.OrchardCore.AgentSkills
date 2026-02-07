@@ -18,13 +18,17 @@ You are an Orchard Core expert. Generate navigation menus, admin menus, and menu
 
 ```json
 {
-  "name": "Feature",
-  "enable": [
-    "OrchardCore.Menu",
-    "OrchardCore.Navigation",
-    "OrchardCore.AdminMenu"
-  ],
-  "disable": []
+  "steps": [
+    {
+      "name": "Feature",
+      "enable": [
+        "OrchardCore.Menu",
+        "OrchardCore.Navigation",
+        "OrchardCore.AdminMenu"
+      ],
+      "disable": []
+    }
+  ]
 }
 ```
 
@@ -34,7 +38,7 @@ You are an Orchard Core expert. Generate navigation menus, admin menus, and menu
 using Microsoft.Extensions.Localization;
 using OrchardCore.Navigation;
 
-public class AdminMenu : INavigationProvider
+public sealed class AdminMenu : INavigationProvider
 {
     private readonly IStringLocalizer S;
 
@@ -69,7 +73,7 @@ public class AdminMenu : INavigationProvider
 ### Registering Navigation Provider
 
 ```csharp
-public class Startup : StartupBase
+public sealed class Startup : StartupBase
 {
     public override void ConfigureServices(IServiceCollection services)
     {
@@ -82,43 +86,47 @@ public class Startup : StartupBase
 
 ```json
 {
-  "name": "Content",
-  "data": [
+  "steps": [
     {
-      "ContentItemId": "main-menu",
-      "ContentType": "Menu",
-      "DisplayText": "Main Menu",
-      "Latest": true,
-      "Published": true,
-      "MenuPart": {},
-      "MenuItemsListPart": {
-        "MenuItems": [
-          {
-            "ContentType": "LinkMenuItem",
-            "ContentItemId": "menu-home",
-            "LinkMenuItemPart": {
-              "Name": "Home",
-              "Url": "~/"
-            }
-          },
-          {
-            "ContentType": "LinkMenuItem",
-            "ContentItemId": "menu-about",
-            "LinkMenuItemPart": {
-              "Name": "About",
-              "Url": "~/about"
-            }
-          },
-          {
-            "ContentType": "LinkMenuItem",
-            "ContentItemId": "menu-contact",
-            "LinkMenuItemPart": {
-              "Name": "Contact",
-              "Url": "~/contact"
-            }
+      "name": "Content",
+      "data": [
+        {
+          "ContentItemId": "main-menu",
+          "ContentType": "Menu",
+          "DisplayText": "Main Menu",
+          "Latest": true,
+          "Published": true,
+          "MenuPart": {},
+          "MenuItemsListPart": {
+            "MenuItems": [
+              {
+                "ContentType": "LinkMenuItem",
+                "ContentItemId": "menu-home",
+                "LinkMenuItemPart": {
+                  "Name": "Home",
+                  "Url": "~/"
+                }
+              },
+              {
+                "ContentType": "LinkMenuItem",
+                "ContentItemId": "menu-about",
+                "LinkMenuItemPart": {
+                  "Name": "About",
+                  "Url": "~/about"
+                }
+              },
+              {
+                "ContentType": "LinkMenuItem",
+                "ContentItemId": "menu-contact",
+                "LinkMenuItemPart": {
+                  "Name": "Contact",
+                  "Url": "~/contact"
+                }
+              }
+            ]
           }
-        ]
-      }
+        }
+      ]
     }
   ]
 }

@@ -18,13 +18,17 @@ You are an Orchard Core expert. Generate security and authorization configuratio
 
 ```json
 {
-  "name": "Feature",
-  "enable": [
-    "OrchardCore.Security",
-    "OrchardCore.Cors",
-    "OrchardCore.ReverseProxy"
-  ],
-  "disable": []
+  "steps": [
+    {
+      "name": "Feature",
+      "enable": [
+        "OrchardCore.Security",
+        "OrchardCore.Cors",
+        "OrchardCore.ReverseProxy"
+      ],
+      "disable": []
+    }
+  ]
 }
 ```
 
@@ -34,14 +38,18 @@ Configure security headers through settings:
 
 ```json
 {
-  "name": "Settings",
-  "SecurityHeadersSettings": {
-    "ContentSecurityPolicy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'",
-    "PermissionsPolicy": "camera=(), microphone=(), geolocation=()",
-    "ReferrerPolicy": "strict-origin-when-cross-origin",
-    "ContentTypeOptions": "nosniff",
-    "XFrameOptions": "SAMEORIGIN"
-  }
+  "steps": [
+    {
+      "name": "Settings",
+      "SecurityHeadersSettings": {
+        "ContentSecurityPolicy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'",
+        "PermissionsPolicy": "camera=(), microphone=(), geolocation=()",
+        "ReferrerPolicy": "strict-origin-when-cross-origin",
+        "ContentTypeOptions": "nosniff",
+        "XFrameOptions": "SAMEORIGIN"
+      }
+    }
+  ]
 }
 ```
 
@@ -49,17 +57,21 @@ Configure security headers through settings:
 
 ```json
 {
-  "name": "CorsSettings",
-  "Policies": [
+  "steps": [
     {
-      "Name": "Default",
-      "AllowedOrigins": ["https://example.com"],
-      "AllowedMethods": ["GET", "POST"],
-      "AllowedHeaders": ["Content-Type", "Authorization"],
-      "AllowCredentials": true
+      "name": "CorsSettings",
+      "Policies": [
+        {
+          "Name": "Default",
+          "AllowedOrigins": ["https://example.com"],
+          "AllowedMethods": ["GET", "POST"],
+          "AllowedHeaders": ["Content-Type", "Authorization"],
+          "AllowCredentials": true
+        }
+      ],
+      "DefaultPolicyName": "Default"
     }
-  ],
-  "DefaultPolicyName": "Default"
+  ]
 }
 ```
 
@@ -69,13 +81,17 @@ Enable Orchard Core as an OAuth/OIDC provider:
 
 ```json
 {
-  "name": "Feature",
-  "enable": [
-    "OrchardCore.OpenId",
-    "OrchardCore.OpenId.Server",
-    "OrchardCore.OpenId.Validation"
-  ],
-  "disable": []
+  "steps": [
+    {
+      "name": "Feature",
+      "enable": [
+        "OrchardCore.OpenId",
+        "OrchardCore.OpenId.Server",
+        "OrchardCore.OpenId.Validation"
+      ],
+      "disable": []
+    }
+  ]
 }
 ```
 
@@ -83,17 +99,21 @@ Enable Orchard Core as an OAuth/OIDC provider:
 
 ```json
 {
-  "name": "Settings",
-  "OpenIdServerSettings": {
-    "Authority": "https://{{YourDomain}}",
-    "TokenEndpointPath": "/connect/token",
-    "AuthorizationEndpointPath": "/connect/authorize",
-    "LogoutEndpointPath": "/connect/logout",
-    "UserinfoEndpointPath": "/connect/userinfo",
-    "AllowAuthorizationCodeFlow": true,
-    "AllowClientCredentialsFlow": true,
-    "AllowRefreshTokenFlow": true
-  }
+  "steps": [
+    {
+      "name": "Settings",
+      "OpenIdServerSettings": {
+        "Authority": "https://{{YourDomain}}",
+        "TokenEndpointPath": "/connect/token",
+        "AuthorizationEndpointPath": "/connect/authorize",
+        "LogoutEndpointPath": "/connect/logout",
+        "UserinfoEndpointPath": "/connect/userinfo",
+        "AllowAuthorizationCodeFlow": true,
+        "AllowClientCredentialsFlow": true,
+        "AllowRefreshTokenFlow": true
+      }
+    }
+  ]
 }
 ```
 
@@ -101,16 +121,20 @@ Enable Orchard Core as an OAuth/OIDC provider:
 
 ```json
 {
-  "name": "OpenIdApplication",
-  "OpenIdApplications": [
+  "steps": [
     {
-      "ClientId": "{{ClientId}}",
-      "DisplayName": "{{ApplicationName}}",
-      "Type": "confidential",
-      "AllowAuthorizationCodeFlow": true,
-      "AllowRefreshTokenFlow": true,
-      "RedirectUris": "https://{{ClientDomain}}/callback",
-      "PostLogoutRedirectUris": "https://{{ClientDomain}}/signout-callback"
+      "name": "OpenIdApplication",
+      "OpenIdApplications": [
+        {
+          "ClientId": "{{ClientId}}",
+          "DisplayName": "{{ApplicationName}}",
+          "Type": "confidential",
+          "AllowAuthorizationCodeFlow": true,
+          "AllowRefreshTokenFlow": true,
+          "RedirectUris": "https://{{ClientDomain}}/callback",
+          "PostLogoutRedirectUris": "https://{{ClientDomain}}/signout-callback"
+        }
+      ]
     }
   ]
 }
@@ -121,7 +145,7 @@ Enable Orchard Core as an OAuth/OIDC provider:
 ```csharp
 using OrchardCore.Security.Permissions;
 
-public class ContentPermissions : IPermissionProvider
+public sealed class ContentPermissions : IPermissionProvider
 {
     public static readonly Permission ViewOwnContent =
         new("ViewOwnContent", "View own content items", new[] { CommonPermissions.ViewContent });
@@ -158,7 +182,7 @@ public class ContentPermissions : IPermissionProvider
 using OrchardCore.ContentManagement;
 using OrchardCore.Contents.Security;
 
-public class MyContentAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
+public sealed class MyContentAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
 {
     protected override Task HandleRequirementAsync(
         AuthorizationHandlerContext context,

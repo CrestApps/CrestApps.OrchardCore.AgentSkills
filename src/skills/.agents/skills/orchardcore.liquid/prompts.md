@@ -182,7 +182,7 @@ When using `LiquidPart` attached to a content type, the template has access to:
 using Fluid;
 using Fluid.Values;
 
-public class MyLiquidFilter : ILiquidFilter
+public sealed class MyLiquidFilter : ILiquidFilter
 {
     public ValueTask<FluidValue> ProcessAsync(FluidValue input, FilterArguments arguments, LiquidTemplateContext context)
     {
@@ -196,7 +196,7 @@ public class MyLiquidFilter : ILiquidFilter
 Register the filter:
 
 ```csharp
-public class Startup : StartupBase
+public sealed class Startup : StartupBase
 {
     public override void ConfigureServices(IServiceCollection services)
     {
@@ -211,7 +211,7 @@ public class Startup : StartupBase
 using Fluid;
 using Fluid.Ast;
 
-public class MyTagStatement : Statement
+public sealed class MyTagStatement : Statement
 {
     public override async ValueTask<Completion> WriteToAsync(
         TextWriter writer,

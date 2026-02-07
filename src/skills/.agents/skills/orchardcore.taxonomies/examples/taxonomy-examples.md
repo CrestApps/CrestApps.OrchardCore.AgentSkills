@@ -6,57 +6,61 @@
 
 ```json
 {
-  "name": "Content",
-  "data": [
+  "steps": [
     {
-      "ContentItemId": "taxonomy-categories",
-      "ContentType": "Taxonomy",
-      "DisplayText": "Categories",
-      "Latest": true,
-      "Published": true,
-      "TitlePart": {
-        "Title": "Categories"
-      },
-      "AliasPart": {
-        "Alias": "categories"
-      },
-      "TaxonomyPart": {
-        "Terms": [
-          {
-            "ContentItemId": "category-technology",
-            "ContentType": "Category",
-            "DisplayText": "Technology",
-            "TitlePart": { "Title": "Technology" },
+      "name": "Content",
+      "data": [
+        {
+          "ContentItemId": "taxonomy-categories",
+          "ContentType": "Taxonomy",
+          "DisplayText": "Categories",
+          "Latest": true,
+          "Published": true,
+          "TitlePart": {
+            "Title": "Categories"
+          },
+          "AliasPart": {
+            "Alias": "categories"
+          },
+          "TaxonomyPart": {
             "Terms": [
               {
-                "ContentItemId": "category-web-dev",
+                "ContentItemId": "category-technology",
                 "ContentType": "Category",
-                "DisplayText": "Web Development",
-                "TitlePart": { "Title": "Web Development" }
+                "DisplayText": "Technology",
+                "TitlePart": { "Title": "Technology" },
+                "Terms": [
+                  {
+                    "ContentItemId": "category-web-dev",
+                    "ContentType": "Category",
+                    "DisplayText": "Web Development",
+                    "TitlePart": { "Title": "Web Development" }
+                  },
+                  {
+                    "ContentItemId": "category-mobile",
+                    "ContentType": "Category",
+                    "DisplayText": "Mobile Development",
+                    "TitlePart": { "Title": "Mobile Development" }
+                  }
+                ]
               },
               {
-                "ContentItemId": "category-mobile",
+                "ContentItemId": "category-design",
                 "ContentType": "Category",
-                "DisplayText": "Mobile Development",
-                "TitlePart": { "Title": "Mobile Development" }
+                "DisplayText": "Design",
+                "TitlePart": { "Title": "Design" }
+              },
+              {
+                "ContentItemId": "category-business",
+                "ContentType": "Category",
+                "DisplayText": "Business",
+                "TitlePart": { "Title": "Business" }
               }
-            ]
-          },
-          {
-            "ContentItemId": "category-design",
-            "ContentType": "Category",
-            "DisplayText": "Design",
-            "TitlePart": { "Title": "Design" }
-          },
-          {
-            "ContentItemId": "category-business",
-            "ContentType": "Category",
-            "DisplayText": "Business",
-            "TitlePart": { "Title": "Business" }
+            ],
+            "TermContentType": "Category"
           }
-        ],
-        "TermContentType": "Category"
-      }
+        }
+      ]
     }
   ]
 }
@@ -66,43 +70,47 @@
 
 ```json
 {
-  "name": "Content",
-  "data": [
+  "steps": [
     {
-      "ContentItemId": "taxonomy-tags",
-      "ContentType": "Taxonomy",
-      "DisplayText": "Tags",
-      "Latest": true,
-      "Published": true,
-      "TitlePart": {
-        "Title": "Tags"
-      },
-      "AliasPart": {
-        "Alias": "tags"
-      },
-      "TaxonomyPart": {
-        "Terms": [
-          {
-            "ContentItemId": "tag-csharp",
-            "ContentType": "Tag",
-            "DisplayText": "C#",
-            "TitlePart": { "Title": "C#" }
+      "name": "Content",
+      "data": [
+        {
+          "ContentItemId": "taxonomy-tags",
+          "ContentType": "Taxonomy",
+          "DisplayText": "Tags",
+          "Latest": true,
+          "Published": true,
+          "TitlePart": {
+            "Title": "Tags"
           },
-          {
-            "ContentItemId": "tag-aspnet",
-            "ContentType": "Tag",
-            "DisplayText": "ASP.NET",
-            "TitlePart": { "Title": "ASP.NET" }
+          "AliasPart": {
+            "Alias": "tags"
           },
-          {
-            "ContentItemId": "tag-orchardcore",
-            "ContentType": "Tag",
-            "DisplayText": "Orchard Core",
-            "TitlePart": { "Title": "Orchard Core" }
+          "TaxonomyPart": {
+            "Terms": [
+              {
+                "ContentItemId": "tag-csharp",
+                "ContentType": "Tag",
+                "DisplayText": "C#",
+                "TitlePart": { "Title": "C#" }
+              },
+              {
+                "ContentItemId": "tag-aspnet",
+                "ContentType": "Tag",
+                "DisplayText": "ASP.NET",
+                "TitlePart": { "Title": "ASP.NET" }
+              },
+              {
+                "ContentItemId": "tag-orchardcore",
+                "ContentType": "Tag",
+                "DisplayText": "Orchard Core",
+                "TitlePart": { "Title": "Orchard Core" }
+              }
+            ],
+            "TermContentType": "Tag"
           }
-        ],
-        "TermContentType": "Tag"
-      }
+        }
+      ]
     }
   ]
 }

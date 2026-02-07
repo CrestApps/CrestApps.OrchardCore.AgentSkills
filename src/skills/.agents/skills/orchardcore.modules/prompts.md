@@ -47,7 +47,7 @@ using OrchardCore.Modules;
 
 namespace {{ModuleName}}
 {
-    public class Startup : StartupBase
+    public sealed class Startup : StartupBase
     {
         public override void ConfigureServices(IServiceCollection services)
         {

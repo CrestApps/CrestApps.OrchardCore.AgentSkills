@@ -4,20 +4,24 @@
 
 ```json
 {
-  "name": "lucene-index",
-  "Indices": [
+  "steps": [
     {
-      "Search": {
-        "AnalyzerName": "standardanalyzer",
-        "IndexLatest": false,
-        "IndexedContentTypes": [
-          "Article",
-          "BlogPost",
-          "Page"
-        ],
-        "Culture": "",
-        "StoreSourceData": false
-      }
+      "name": "lucene-index",
+      "Indices": [
+        {
+          "Search": {
+            "AnalyzerName": "standardanalyzer",
+            "IndexLatest": false,
+            "IndexedContentTypes": [
+              "Article",
+              "BlogPost",
+              "Page"
+            ],
+            "Culture": "",
+            "StoreSourceData": false
+          }
+        }
+      ]
     }
   ]
 }
@@ -27,23 +31,27 @@
 
 ```json
 {
-  "name": "Queries",
-  "Queries": [
+  "steps": [
     {
-      "Source": "Lucene",
-      "Name": "RecentArticles",
-      "Index": "Search",
-      "Template": "{\"query\":{\"bool\":{\"filter\":[{\"term\":{\"Content.ContentItem.ContentType\":\"Article\"}}]}},\"sort\":{\"Content.ContentItem.PublishedUtc\":{\"order\":\"desc\"}},\"size\":10}",
-      "ReturnContentItems": true,
-      "Schema": "[]"
-    },
-    {
-      "Source": "Lucene",
-      "Name": "SearchByKeyword",
-      "Index": "Search",
-      "Template": "{\"query\":{\"multi_match\":{\"query\":\"{{term}}\",\"fields\":[\"Content.ContentItem.FullText\"]}},\"size\":20}",
-      "ReturnContentItems": true,
-      "Schema": "[{\"name\":\"term\",\"type\":\"String\"}]"
+      "name": "Queries",
+      "Queries": [
+        {
+          "Source": "Lucene",
+          "Name": "RecentArticles",
+          "Index": "Search",
+          "Template": "{\"query\":{\"bool\":{\"filter\":[{\"term\":{\"Content.ContentItem.ContentType\":\"Article\"}}]}},\"sort\":{\"Content.ContentItem.PublishedUtc\":{\"order\":\"desc\"}},\"size\":10}",
+          "ReturnContentItems": true,
+          "Schema": "[]"
+        },
+        {
+          "Source": "Lucene",
+          "Name": "SearchByKeyword",
+          "Index": "Search",
+          "Template": "{\"query\":{\"multi_match\":{\"query\":\"{{term}}\",\"fields\":[\"Content.ContentItem.FullText\"]}},\"size\":20}",
+          "ReturnContentItems": true,
+          "Schema": "[{\"name\":\"term\",\"type\":\"String\"}]"
+        }
+      ]
     }
   ]
 }
@@ -54,7 +62,7 @@
 ```csharp
 using OrchardCore.Indexing;
 
-public class ProductPartIndexHandler : ContentPartIndexHandler<ProductPart>
+public sealed class ProductPartIndexHandler : ContentPartIndexHandler<ProductPart>
 {
     public override Task BuildIndexAsync(
         ProductPart part,

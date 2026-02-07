@@ -32,12 +32,16 @@ To enable remote deployment, enable the `OrchardCore.Deployment.Remote` feature.
 
 ```json
 {
-  "name": "Feature",
-  "enable": [
-    "OrchardCore.Deployment",
-    "OrchardCore.Deployment.Remote"
-  ],
-  "disable": []
+  "steps": [
+    {
+      "name": "Feature",
+      "enable": [
+        "OrchardCore.Deployment",
+        "OrchardCore.Deployment.Remote"
+      ],
+      "disable": []
+    }
+  ]
 }
 ```
 
@@ -75,7 +79,7 @@ A deployment plan produces a recipe JSON like:
 ```csharp
 using OrchardCore.Deployment;
 
-public class MyCustomDeploymentStep : DeploymentStep
+public sealed class MyCustomDeploymentStep : DeploymentStep
 {
     public MyCustomDeploymentStep()
     {
@@ -83,7 +87,7 @@ public class MyCustomDeploymentStep : DeploymentStep
     }
 }
 
-public class MyCustomDeploymentStepDriver : DisplayDriver<DeploymentStep, MyCustomDeploymentStep>
+public sealed class MyCustomDeploymentStepDriver : DisplayDriver<DeploymentStep, MyCustomDeploymentStep>
 {
     public override IDisplayResult Display(MyCustomDeploymentStep step)
     {
@@ -94,7 +98,7 @@ public class MyCustomDeploymentStepDriver : DisplayDriver<DeploymentStep, MyCust
     }
 }
 
-public class MyCustomDeploymentSource : IDeploymentSource
+public sealed class MyCustomDeploymentSource : IDeploymentSource
 {
     public async Task ProcessDeploymentStepAsync(DeploymentStep step, DeploymentPlanResult result)
     {
@@ -116,7 +120,7 @@ public class MyCustomDeploymentSource : IDeploymentSource
 ### Registering Deployment Steps
 
 ```csharp
-public class Startup : StartupBase
+public sealed class Startup : StartupBase
 {
     public override void ConfigureServices(IServiceCollection services)
     {

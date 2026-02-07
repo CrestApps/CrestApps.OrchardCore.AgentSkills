@@ -42,7 +42,7 @@ using CrestApps.Testimonials.Models;
 
 namespace CrestApps.Testimonials
 {
-    public class Startup : StartupBase
+    public sealed class Startup : StartupBase
     {
         public override void ConfigureServices(IServiceCollection services)
         {
@@ -62,7 +62,7 @@ using OrchardCore.ContentManagement;
 
 namespace CrestApps.Testimonials.Models
 {
-    public class TestimonialPart : ContentPart
+    public sealed class TestimonialPart : ContentPart
     {
         public string AuthorName { get; set; }
         public string Quote { get; set; }

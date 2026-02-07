@@ -16,7 +16,7 @@ You are an Orchard Core expert. Generate code and configuration for creating a c
 ### Migration Pattern
 
 ```csharp
-public class Migrations : DataMigration
+public sealed class Migrations : DataMigration
 {
     public int Create()
     {

@@ -4,26 +4,30 @@
 
 ```json
 {
-  "name": "OpenIdApplication",
-  "OpenIdApplications": [
+  "steps": [
     {
-      "ClientId": "my-spa-client",
-      "DisplayName": "My SPA Application",
-      "Type": "public",
-      "AllowAuthorizationCodeFlow": true,
-      "RequirePkce": true,
-      "AllowRefreshTokenFlow": true,
-      "RedirectUris": "https://myapp.example.com/callback",
-      "PostLogoutRedirectUris": "https://myapp.example.com/signout-callback",
-      "Scopes": "openid profile email"
-    },
-    {
-      "ClientId": "my-api-service",
-      "DisplayName": "My API Service",
-      "Type": "confidential",
-      "AllowClientCredentialsFlow": true,
-      "ClientSecret": "{{SecureSecret}}",
-      "Scopes": "api"
+      "name": "OpenIdApplication",
+      "OpenIdApplications": [
+        {
+          "ClientId": "my-spa-client",
+          "DisplayName": "My SPA Application",
+          "Type": "public",
+          "AllowAuthorizationCodeFlow": true,
+          "RequirePkce": true,
+          "AllowRefreshTokenFlow": true,
+          "RedirectUris": "https://myapp.example.com/callback",
+          "PostLogoutRedirectUris": "https://myapp.example.com/signout-callback",
+          "Scopes": "openid profile email"
+        },
+        {
+          "ClientId": "my-api-service",
+          "DisplayName": "My API Service",
+          "Type": "confidential",
+          "AllowClientCredentialsFlow": true,
+          "ClientSecret": "{{SecureSecret}}",
+          "Scopes": "api"
+        }
+      ]
     }
   ]
 }
@@ -33,21 +37,25 @@
 
 ```json
 {
-  "name": "CorsSettings",
-  "Policies": [
+  "steps": [
     {
-      "Name": "AllowSPA",
-      "AllowedOrigins": [
-        "https://myapp.example.com",
-        "http://localhost:3000"
+      "name": "CorsSettings",
+      "Policies": [
+        {
+          "Name": "AllowSPA",
+          "AllowedOrigins": [
+            "https://myapp.example.com",
+            "http://localhost:3000"
+          ],
+          "AllowedMethods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+          "AllowedHeaders": ["Content-Type", "Authorization", "X-Requested-With"],
+          "AllowCredentials": true,
+          "ExposedHeaders": ["X-Total-Count"]
+        }
       ],
-      "AllowedMethods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-      "AllowedHeaders": ["Content-Type", "Authorization", "X-Requested-With"],
-      "AllowCredentials": true,
-      "ExposedHeaders": ["X-Total-Count"]
+      "DefaultPolicyName": "AllowSPA"
     }
-  ],
-  "DefaultPolicyName": "AllowSPA"
+  ]
 }
 ```
 
@@ -57,7 +65,7 @@
 using Microsoft.AspNetCore.Authorization;
 using OrchardCore.ContentManagement;
 
-public class SecureContentController : Controller
+public sealed class SecureContentController : Controller
 {
     private readonly IAuthorizationService _authorizationService;
     private readonly IContentManager _contentManager;

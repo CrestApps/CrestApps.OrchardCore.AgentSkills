@@ -18,11 +18,15 @@ You are an Orchard Core expert. Generate taxonomy definitions, terms, and taxono
 
 ```json
 {
-  "name": "Feature",
-  "enable": [
-    "OrchardCore.Taxonomies"
-  ],
-  "disable": []
+  "steps": [
+    {
+      "name": "Feature",
+      "enable": [
+        "OrchardCore.Taxonomies"
+      ],
+      "disable": []
+    }
+  ]
 }
 ```
 
@@ -30,41 +34,45 @@ You are an Orchard Core expert. Generate taxonomy definitions, terms, and taxono
 
 ```json
 {
-  "name": "Content",
-  "data": [
+  "steps": [
     {
-      "ContentItemId": "{{TaxonomyId}}",
-      "ContentType": "Taxonomy",
-      "DisplayText": "{{TaxonomyName}}",
-      "Latest": true,
-      "Published": true,
-      "TitlePart": {
-        "Title": "{{TaxonomyName}}"
-      },
-      "AliasPart": {
-        "Alias": "{{taxonomy-alias}}"
-      },
-      "TaxonomyPart": {
-        "Terms": [
-          {
-            "ContentItemId": "{{TermId1}}",
-            "ContentType": "{{TermContentType}}",
-            "DisplayText": "{{TermName1}}",
-            "TitlePart": {
-              "Title": "{{TermName1}}"
-            }
+      "name": "Content",
+      "data": [
+        {
+          "ContentItemId": "{{TaxonomyId}}",
+          "ContentType": "Taxonomy",
+          "DisplayText": "{{TaxonomyName}}",
+          "Latest": true,
+          "Published": true,
+          "TitlePart": {
+            "Title": "{{TaxonomyName}}"
           },
-          {
-            "ContentItemId": "{{TermId2}}",
-            "ContentType": "{{TermContentType}}",
-            "DisplayText": "{{TermName2}}",
-            "TitlePart": {
-              "Title": "{{TermName2}}"
-            }
+          "AliasPart": {
+            "Alias": "{{taxonomy-alias}}"
+          },
+          "TaxonomyPart": {
+            "Terms": [
+              {
+                "ContentItemId": "{{TermId1}}",
+                "ContentType": "{{TermContentType}}",
+                "DisplayText": "{{TermName1}}",
+                "TitlePart": {
+                  "Title": "{{TermName1}}"
+                }
+              },
+              {
+                "ContentItemId": "{{TermId2}}",
+                "ContentType": "{{TermContentType}}",
+                "DisplayText": "{{TermName2}}",
+                "TitlePart": {
+                  "Title": "{{TermName2}}"
+                }
+              }
+            ],
+            "TermContentType": "{{TermContentType}}"
           }
-        ],
-        "TermContentType": "{{TermContentType}}"
-      }
+        }
+      ]
     }
   ]
 }

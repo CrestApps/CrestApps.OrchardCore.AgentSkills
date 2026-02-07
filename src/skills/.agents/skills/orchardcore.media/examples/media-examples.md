@@ -51,33 +51,37 @@ public int Create()
 
 ```json
 {
-  "name": "MediaProfiles",
-  "MediaProfiles": {
-    "Thumbnail": {
-      "Hint": "Small thumbnail for listings",
-      "Width": 150,
-      "Height": 150,
-      "Mode": "Crop",
-      "Format": "webp",
-      "Quality": 75
-    },
-    "Banner": {
-      "Hint": "Full-width banner image",
-      "Width": 1920,
-      "Height": 600,
-      "Mode": "Crop",
-      "Format": "webp",
-      "Quality": 85
-    },
-    "Avatar": {
-      "Hint": "User avatar",
-      "Width": 200,
-      "Height": 200,
-      "Mode": "Crop",
-      "Format": "webp",
-      "Quality": 80
+  "steps": [
+    {
+      "name": "MediaProfiles",
+      "MediaProfiles": {
+        "Thumbnail": {
+          "Hint": "Small thumbnail for listings",
+          "Width": 150,
+          "Height": 150,
+          "Mode": "Crop",
+          "Format": "webp",
+          "Quality": 75
+        },
+        "Banner": {
+          "Hint": "Full-width banner image",
+          "Width": 1920,
+          "Height": 600,
+          "Mode": "Crop",
+          "Format": "webp",
+          "Quality": 85
+        },
+        "Avatar": {
+          "Hint": "User avatar",
+          "Width": 200,
+          "Height": 200,
+          "Mode": "Crop",
+          "Format": "webp",
+          "Quality": 80
+        }
+      }
     }
-  }
+  ]
 }
 ```
 

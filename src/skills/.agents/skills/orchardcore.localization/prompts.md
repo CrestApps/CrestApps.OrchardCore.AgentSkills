@@ -19,13 +19,17 @@ You are an Orchard Core expert. Generate localization configuration for multi-la
 
 ```json
 {
-  "name": "Feature",
-  "enable": [
-    "OrchardCore.Localization",
-    "OrchardCore.ContentLocalization",
-    "OrchardCore.ContentLocalization.ContentCulturePicker"
-  ],
-  "disable": []
+  "steps": [
+    {
+      "name": "Feature",
+      "enable": [
+        "OrchardCore.Localization",
+        "OrchardCore.ContentLocalization",
+        "OrchardCore.ContentLocalization.ContentCulturePicker"
+      ],
+      "disable": []
+    }
+  ]
 }
 ```
 
@@ -33,15 +37,19 @@ You are an Orchard Core expert. Generate localization configuration for multi-la
 
 ```json
 {
-  "name": "Settings",
-  "LocalizationSettings": {
-    "DefaultCulture": "{{DefaultCulture}}",
-    "SupportedCultures": [
-      "{{Culture1}}",
-      "{{Culture2}}",
-      "{{Culture3}}"
-    ]
-  }
+  "steps": [
+    {
+      "name": "Settings",
+      "LocalizationSettings": {
+        "DefaultCulture": "{{DefaultCulture}}",
+        "SupportedCultures": [
+          "{{Culture1}}",
+          "{{Culture2}}",
+          "{{Culture3}}"
+        ]
+      }
+    }
+  ]
 }
 ```
 
@@ -82,7 +90,7 @@ MyModule/
 ```csharp
 using Microsoft.Extensions.Localization;
 
-public class MyController : Controller
+public sealed class MyController : Controller
 {
     private readonly IStringLocalizer S;
 

@@ -18,11 +18,15 @@ You are an Orchard Core expert. Generate GraphQL queries and custom type definit
 
 ```json
 {
-  "name": "Feature",
-  "enable": [
-    "OrchardCore.Apis.GraphQL"
-  ],
-  "disable": []
+  "steps": [
+    {
+      "name": "Feature",
+      "enable": [
+        "OrchardCore.Apis.GraphQL"
+      ],
+      "disable": []
+    }
+  ]
 }
 ```
 
@@ -129,7 +133,7 @@ using GraphQL.Types;
 using OrchardCore.Apis.GraphQL;
 using OrchardCore.ContentManagement;
 
-public class MyPartQueryObjectType : ObjectGraphType<MyPart>
+public sealed class MyPartQueryObjectType : ObjectGraphType<MyPart>
 {
     public MyPartQueryObjectType()
     {
@@ -148,7 +152,7 @@ public class MyPartQueryObjectType : ObjectGraphType<MyPart>
 ```csharp
 using GraphQL.Types;
 
-public class MyPartInputObjectType : InputObjectGraphType<MyPart>
+public sealed class MyPartInputObjectType : InputObjectGraphType<MyPart>
 {
     public MyPartInputObjectType()
     {
@@ -165,7 +169,7 @@ public class MyPartInputObjectType : InputObjectGraphType<MyPart>
 ```csharp
 using OrchardCore.ContentManagement.GraphQL.Queries;
 
-public class MyPartIndexAliasProvider : IIndexAliasProvider
+public sealed class MyPartIndexAliasProvider : IIndexAliasProvider
 {
     private static readonly IndexAlias[] _aliases = new[]
     {
@@ -189,7 +193,7 @@ public class MyPartIndexAliasProvider : IIndexAliasProvider
 ```csharp
 using OrchardCore.Apis;
 
-public class Startup : StartupBase
+public sealed class Startup : StartupBase
 {
     public override void ConfigureServices(IServiceCollection services)
     {

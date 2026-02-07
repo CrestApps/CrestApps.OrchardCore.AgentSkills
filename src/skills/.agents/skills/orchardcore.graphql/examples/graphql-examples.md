@@ -66,7 +66,7 @@
 using GraphQL.Types;
 using OrchardCore.ContentManagement;
 
-public class ProductPart : ContentPart
+public sealed class ProductPart : ContentPart
 {
     public string ProductName { get; set; }
     public decimal Price { get; set; }
@@ -74,7 +74,7 @@ public class ProductPart : ContentPart
     public bool InStock { get; set; }
 }
 
-public class ProductPartQueryObjectType : ObjectGraphType<ProductPart>
+public sealed class ProductPartQueryObjectType : ObjectGraphType<ProductPart>
 {
     public ProductPartQueryObjectType()
     {
@@ -88,7 +88,7 @@ public class ProductPartQueryObjectType : ObjectGraphType<ProductPart>
 }
 
 // Registration in Startup.cs
-public class Startup : StartupBase
+public sealed class Startup : StartupBase
 {
     public override void ConfigureServices(IServiceCollection services)
     {

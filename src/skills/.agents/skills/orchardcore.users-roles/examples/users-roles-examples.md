@@ -5,7 +5,7 @@
 ```csharp
 using OrchardCore.Security.Permissions;
 
-public class Permissions : IPermissionProvider
+public sealed class Permissions : IPermissionProvider
 {
     public static readonly Permission ManageProducts =
         new("ManageProducts", "Manage product catalog");
@@ -58,34 +58,38 @@ public class Permissions : IPermissionProvider
 
 ```json
 {
-  "name": "Roles",
-  "Roles": [
+  "steps": [
     {
-      "Name": "ProductManager",
-      "Description": "Can manage products and view orders",
-      "Permissions": [
-        "ManageProducts",
-        "ViewProducts",
-        "ViewOrders",
-        "AccessAdminPanel"
-      ]
-    },
-    {
-      "Name": "OrderProcessor",
-      "Description": "Can manage orders",
-      "Permissions": [
-        "ManageOrders",
-        "ViewOrders",
-        "ViewProducts",
-        "AccessAdminPanel"
-      ]
-    },
-    {
-      "Name": "Customer",
-      "Description": "Registered customer with basic access",
-      "Permissions": [
-        "ViewProducts",
-        "ViewOwnOrders"
+      "name": "Roles",
+      "Roles": [
+        {
+          "Name": "ProductManager",
+          "Description": "Can manage products and view orders",
+          "Permissions": [
+            "ManageProducts",
+            "ViewProducts",
+            "ViewOrders",
+            "AccessAdminPanel"
+          ]
+        },
+        {
+          "Name": "OrderProcessor",
+          "Description": "Can manage orders",
+          "Permissions": [
+            "ManageOrders",
+            "ViewOrders",
+            "ViewProducts",
+            "AccessAdminPanel"
+          ]
+        },
+        {
+          "Name": "Customer",
+          "Description": "Registered customer with basic access",
+          "Permissions": [
+            "ViewProducts",
+            "ViewOwnOrders"
+          ]
+        }
       ]
     }
   ]

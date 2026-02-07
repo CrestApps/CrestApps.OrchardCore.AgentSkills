@@ -140,7 +140,7 @@ Override shape rendering by creating templates in the `Views/` folder:
 ```csharp
 using OrchardCore.ResourceManagement;
 
-public class ResourceManifest : IResourceManifestProvider
+public sealed class ResourceManifest : IResourceManifestProvider
 {
     public void BuildManifests(IResourceManifestBuilder builder)
     {

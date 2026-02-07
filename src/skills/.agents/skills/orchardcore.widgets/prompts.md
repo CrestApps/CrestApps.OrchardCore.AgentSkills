@@ -18,13 +18,17 @@ You are an Orchard Core expert. Generate widget definitions, layer configuration
 
 ```json
 {
-  "name": "Feature",
-  "enable": [
-    "OrchardCore.Widgets",
-    "OrchardCore.Layers",
-    "OrchardCore.Flows"
-  ],
-  "disable": []
+  "steps": [
+    {
+      "name": "Feature",
+      "enable": [
+        "OrchardCore.Widgets",
+        "OrchardCore.Layers",
+        "OrchardCore.Flows"
+      ],
+      "disable": []
+    }
+  ]
 }
 ```
 
@@ -57,43 +61,47 @@ public int Create()
 
 ```json
 {
-  "name": "Layers",
-  "Layers": [
+  "steps": [
     {
-      "Name": "Always",
-      "LayerRule": {
-        "Conditions": [
-          {
-            "Name": "BooleanCondition",
-            "Value": true
-          }
-        ]
-      },
-      "Description": "Widgets on this layer are always displayed."
-    },
-    {
-      "Name": "Homepage",
-      "LayerRule": {
-        "Conditions": [
-          {
-            "Name": "UrlCondition",
-            "Value": "^/$"
-          }
-        ]
-      },
-      "Description": "Widgets on this layer are displayed on the homepage."
-    },
-    {
-      "Name": "Authenticated",
-      "LayerRule": {
-        "Conditions": [
-          {
-            "Name": "IsAuthenticatedCondition",
-            "Value": true
-          }
-        ]
-      },
-      "Description": "Widgets on this layer are displayed for authenticated users."
+      "name": "Layers",
+      "Layers": [
+        {
+          "Name": "Always",
+          "LayerRule": {
+            "Conditions": [
+              {
+                "Name": "BooleanCondition",
+                "Value": true
+              }
+            ]
+          },
+          "Description": "Widgets on this layer are always displayed."
+        },
+        {
+          "Name": "Homepage",
+          "LayerRule": {
+            "Conditions": [
+              {
+                "Name": "UrlCondition",
+                "Value": "^/$"
+              }
+            ]
+          },
+          "Description": "Widgets on this layer are displayed on the homepage."
+        },
+        {
+          "Name": "Authenticated",
+          "LayerRule": {
+            "Conditions": [
+              {
+                "Name": "IsAuthenticatedCondition",
+                "Value": true
+              }
+            ]
+          },
+          "Description": "Widgets on this layer are displayed for authenticated users."
+        }
+      ]
     }
   ]
 }
@@ -117,27 +125,31 @@ Widgets are assigned to zones and layers via the admin UI or recipes:
 
 ```json
 {
-  "name": "Content",
-  "data": [
+  "steps": [
     {
-      "ContentItemId": "widget-hero-banner",
-      "ContentType": "HeroBanner",
-      "DisplayText": "Welcome Banner",
-      "Latest": true,
-      "Published": true,
-      "LayerMetadata": {
-        "Layer": "Homepage",
-        "Zone": "Header",
-        "Position": 0
-      },
-      "HeroBanner": {
-        "Heading": {
-          "Text": "Welcome to Our Site"
-        },
-        "Description": {
-          "Html": "<p>Your one-stop solution.</p>"
+      "name": "Content",
+      "data": [
+        {
+          "ContentItemId": "widget-hero-banner",
+          "ContentType": "HeroBanner",
+          "DisplayText": "Welcome Banner",
+          "Latest": true,
+          "Published": true,
+          "LayerMetadata": {
+            "Layer": "Homepage",
+            "Zone": "Header",
+            "Position": 0
+          },
+          "HeroBanner": {
+            "Heading": {
+              "Text": "Welcome to Our Site"
+            },
+            "Description": {
+              "Html": "<p>Your one-stop solution.</p>"
+            }
+          }
         }
-      }
+      ]
     }
   ]
 }

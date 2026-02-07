@@ -19,13 +19,17 @@ You are an Orchard Core expert. Generate search and indexing configurations for 
 
 ```json
 {
-  "name": "Feature",
-  "enable": [
-    "OrchardCore.Search",
-    "OrchardCore.Search.Lucene",
-    "OrchardCore.Indexing"
-  ],
-  "disable": []
+  "steps": [
+    {
+      "name": "Feature",
+      "enable": [
+        "OrchardCore.Search",
+        "OrchardCore.Search.Lucene",
+        "OrchardCore.Indexing"
+      ],
+      "disable": []
+    }
+  ]
 }
 ```
 
@@ -33,19 +37,23 @@ You are an Orchard Core expert. Generate search and indexing configurations for 
 
 ```json
 {
-  "name": "lucene-index",
-  "Indices": [
+  "steps": [
     {
-      "Search": {
-        "AnalyzerName": "standardanalyzer",
-        "IndexLatest": false,
-        "IndexedContentTypes": [
-          "Article",
-          "BlogPost"
-        ],
-        "Culture": "",
-        "StoreSourceData": false
-      }
+      "name": "lucene-index",
+      "Indices": [
+        {
+          "Search": {
+            "AnalyzerName": "standardanalyzer",
+            "IndexLatest": false,
+            "IndexedContentTypes": [
+              "Article",
+              "BlogPost"
+            ],
+            "Culture": "",
+            "StoreSourceData": false
+          }
+        }
+      ]
     }
   ]
 }
@@ -71,19 +79,23 @@ Configure in `appsettings.json`:
 
 ```json
 {
-  "name": "elasticsearch-index",
-  "Indices": [
+  "steps": [
     {
-      "Search": {
-        "AnalyzerName": "standard",
-        "IndexLatest": false,
-        "IndexedContentTypes": [
-          "Article",
-          "BlogPost"
-        ],
-        "Culture": "",
-        "StoreSourceData": false
-      }
+      "name": "elasticsearch-index",
+      "Indices": [
+        {
+          "Search": {
+            "AnalyzerName": "standard",
+            "IndexLatest": false,
+            "IndexedContentTypes": [
+              "Article",
+              "BlogPost"
+            ],
+            "Culture": "",
+            "StoreSourceData": false
+          }
+        }
+      ]
     }
   ]
 }
@@ -93,15 +105,19 @@ Configure in `appsettings.json`:
 
 ```json
 {
-  "name": "Queries",
-  "Queries": [
+  "steps": [
     {
-      "Source": "Lucene",
-      "Name": "RecentBlogPosts",
-      "Index": "Search",
-      "Template": "{\"query\":{\"bool\":{\"filter\":[{\"term\":{\"Content.ContentItem.ContentType\":\"BlogPost\"}}]}},\"sort\":{\"Content.ContentItem.CreatedUtc\":{\"order\":\"desc\"}},\"size\":10}",
-      "ReturnContentItems": true,
-      "Schema": "[]"
+      "name": "Queries",
+      "Queries": [
+        {
+          "Source": "Lucene",
+          "Name": "RecentBlogPosts",
+          "Index": "Search",
+          "Template": "{\"query\":{\"bool\":{\"filter\":[{\"term\":{\"Content.ContentItem.ContentType\":\"BlogPost\"}}]}},\"sort\":{\"Content.ContentItem.CreatedUtc\":{\"order\":\"desc\"}},\"size\":10}",
+          "ReturnContentItems": true,
+          "Schema": "[]"
+        }
+      ]
     }
   ]
 }
@@ -124,7 +140,7 @@ Configure in `appsettings.json`:
 ```csharp
 using OrchardCore.Search.Lucene;
 
-public class SearchService
+public sealed class SearchService
 {
     private readonly LuceneQueryService _queryService;
     private readonly LuceneIndexManager _indexManager;
@@ -158,7 +174,7 @@ public class SearchService
 ```csharp
 using OrchardCore.Indexing;
 
-public class MyPartIndexHandler : ContentPartIndexHandler<MyPart>
+public sealed class MyPartIndexHandler : ContentPartIndexHandler<MyPart>
 {
     public override Task BuildIndexAsync(
         MyPart part,
@@ -179,7 +195,7 @@ public class MyPartIndexHandler : ContentPartIndexHandler<MyPart>
 ### Registering Index Handler
 
 ```csharp
-public class Startup : StartupBase
+public sealed class Startup : StartupBase
 {
     public override void ConfigureServices(IServiceCollection services)
     {
@@ -192,11 +208,15 @@ public class Startup : StartupBase
 
 ```json
 {
-  "name": "Settings",
-  "SearchSettings": {
-    "ProviderName": "Lucene",
-    "Placeholder": "Search...",
-    "PageSize": 10
-  }
+  "steps": [
+    {
+      "name": "Settings",
+      "SearchSettings": {
+        "ProviderName": "Lucene",
+        "Placeholder": "Search...",
+        "PageSize": 10
+      }
+    }
+  ]
 }
 ```

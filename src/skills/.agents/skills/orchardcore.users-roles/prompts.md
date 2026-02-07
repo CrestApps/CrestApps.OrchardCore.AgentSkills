@@ -18,15 +18,19 @@ You are an Orchard Core expert. Generate code and configuration for user managem
 
 ```json
 {
-  "name": "Feature",
-  "enable": [
-    "OrchardCore.Users",
-    "OrchardCore.Users.Registration",
-    "OrchardCore.Users.ResetPassword",
-    "OrchardCore.Users.CustomUserSettings",
-    "OrchardCore.Roles"
-  ],
-  "disable": []
+  "steps": [
+    {
+      "name": "Feature",
+      "enable": [
+        "OrchardCore.Users",
+        "OrchardCore.Users.Registration",
+        "OrchardCore.Users.ResetPassword",
+        "OrchardCore.Users.CustomUserSettings",
+        "OrchardCore.Roles"
+      ],
+      "disable": []
+    }
+  ]
 }
 ```
 
@@ -35,7 +39,7 @@ You are an Orchard Core expert. Generate code and configuration for user managem
 ```csharp
 using OrchardCore.Security.Permissions;
 
-public class Permissions : IPermissionProvider
+public sealed class Permissions : IPermissionProvider
 {
     public static readonly Permission Manage{{Feature}} =
         new("Manage{{Feature}}", "Manage {{Feature}}");
@@ -74,7 +78,7 @@ public class Permissions : IPermissionProvider
 ### Registering Permission Provider
 
 ```csharp
-public class Startup : StartupBase
+public sealed class Startup : StartupBase
 {
     public override void ConfigureServices(IServiceCollection services)
     {
@@ -88,7 +92,7 @@ public class Startup : StartupBase
 ```csharp
 using Microsoft.AspNetCore.Authorization;
 
-public class MyController : Controller
+public sealed class MyController : Controller
 {
     private readonly IAuthorizationService _authorizationService;
 
@@ -121,14 +125,18 @@ public class MyController : Controller
 
 ```json
 {
-  "name": "Roles",
-  "Roles": [
+  "steps": [
     {
-      "Name": "{{RoleName}}",
-      "Description": "{{RoleDescription}}",
-      "Permissions": [
-        "View{{Feature}}",
-        "AccessAdminPanel"
+      "name": "Roles",
+      "Roles": [
+        {
+          "Name": "{{RoleName}}",
+          "Description": "{{RoleDescription}}",
+          "Permissions": [
+            "View{{Feature}}",
+            "AccessAdminPanel"
+          ]
+        }
       ]
     }
   ]
@@ -168,14 +176,18 @@ _contentDefinitionManager.AlterPartDefinition("UserProfile", part => part
 
 ```json
 {
-  "name": "Settings",
-  "RegistrationSettings": {
-    "UsersCanRegister": "AllowRegistration",
-    "NoPasswordForExternalUsers": false,
-    "NoUsernameForExternalUsers": false,
-    "NoEmailForExternalUsers": false,
-    "UseScriptToGenerateUsername": false
-  }
+  "steps": [
+    {
+      "name": "Settings",
+      "RegistrationSettings": {
+        "UsersCanRegister": "AllowRegistration",
+        "NoPasswordForExternalUsers": false,
+        "NoUsernameForExternalUsers": false,
+        "NoEmailForExternalUsers": false,
+        "UseScriptToGenerateUsername": false
+      }
+    }
+  ]
 }
 ```
 
@@ -183,11 +195,15 @@ _contentDefinitionManager.AlterPartDefinition("UserProfile", part => part
 
 ```json
 {
-  "name": "Feature",
-  "enable": [
-    "OrchardCore.Microsoft.Authentication.AzureAD"
-  ],
-  "disable": []
+  "steps": [
+    {
+      "name": "Feature",
+      "enable": [
+        "OrchardCore.Microsoft.Authentication.AzureAD"
+      ],
+      "disable": []
+    }
+  ]
 }
 ```
 

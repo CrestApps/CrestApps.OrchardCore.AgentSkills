@@ -18,13 +18,17 @@ You are an Orchard Core expert. Generate workflow definitions and custom activit
 
 ```json
 {
-  "name": "Feature",
-  "enable": [
-    "OrchardCore.Workflows",
-    "OrchardCore.Workflows.Http",
-    "OrchardCore.Workflows.Timers"
-  ],
-  "disable": []
+  "steps": [
+    {
+      "name": "Feature",
+      "enable": [
+        "OrchardCore.Workflows",
+        "OrchardCore.Workflows.Http",
+        "OrchardCore.Workflows.Timers"
+      ],
+      "disable": []
+    }
+  ]
 }
 ```
 
@@ -62,7 +66,7 @@ using OrchardCore.Workflows.Abstractions.Models;
 using OrchardCore.Workflows.Activities;
 using OrchardCore.Workflows.Models;
 
-public class MyCustomTask : TaskActivity
+public sealed class MyCustomTask : TaskActivity
 {
     public override string Name => "MyCustomTask";
 
@@ -100,7 +104,7 @@ public class MyCustomTask : TaskActivity
 using OrchardCore.Workflows.Activities;
 using OrchardCore.Workflows.Models;
 
-public class MyCustomEvent : EventActivity
+public sealed class MyCustomEvent : EventActivity
 {
     public override string Name => "MyCustomEvent";
 
@@ -127,7 +131,7 @@ public class MyCustomEvent : EventActivity
 ### Registering Custom Activities
 
 ```csharp
-public class Startup : StartupBase
+public sealed class Startup : StartupBase
 {
     public override void ConfigureServices(IServiceCollection services)
     {

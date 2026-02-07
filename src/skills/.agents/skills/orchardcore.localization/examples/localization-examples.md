@@ -39,17 +39,21 @@ msgstr[1] "{0} commentaires"
 
 ```json
 {
-  "name": "Settings",
-  "LocalizationSettings": {
-    "DefaultCulture": "en-US",
-    "SupportedCultures": [
-      "en-US",
-      "fr-FR",
-      "es-ES",
-      "de-DE",
-      "ja-JP"
-    ]
-  }
+  "steps": [
+    {
+      "name": "Settings",
+      "LocalizationSettings": {
+        "DefaultCulture": "en-US",
+        "SupportedCultures": [
+          "en-US",
+          "fr-FR",
+          "es-ES",
+          "de-DE",
+          "ja-JP"
+        ]
+      }
+    }
+  ]
 }
 ```
 
@@ -58,7 +62,7 @@ msgstr[1] "{0} commentaires"
 ```csharp
 using Microsoft.Extensions.Localization;
 
-public class BlogController : Controller
+public sealed class BlogController : Controller
 {
     private readonly IStringLocalizer S;
 

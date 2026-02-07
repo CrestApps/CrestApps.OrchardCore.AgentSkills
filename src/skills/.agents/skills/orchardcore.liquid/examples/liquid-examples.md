@@ -90,7 +90,7 @@ using Fluid.Values;
 using Microsoft.Extensions.DependencyInjection;
 
 // Filter implementation
-public class ReadingTimeFilter : ILiquidFilter
+public sealed class ReadingTimeFilter : ILiquidFilter
 {
     public ValueTask<FluidValue> ProcessAsync(
         FluidValue input,
@@ -107,7 +107,7 @@ public class ReadingTimeFilter : ILiquidFilter
 }
 
 // Registration
-public class Startup : StartupBase
+public sealed class Startup : StartupBase
 {
     public override void ConfigureServices(IServiceCollection services)
     {

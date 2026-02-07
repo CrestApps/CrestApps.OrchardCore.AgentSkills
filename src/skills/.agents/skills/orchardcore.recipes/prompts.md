@@ -37,14 +37,18 @@ You are an Orchard Core expert. Generate a recipe JSON file for configuring an O
 
 ```json
 {
-  "name": "Feature",
-  "enable": [
-    "OrchardCore.ContentManagement",
-    "OrchardCore.ContentTypes",
-    "OrchardCore.Title",
-    "OrchardCore.Autoroute"
-  ],
-  "disable": []
+  "steps": [
+    {
+      "name": "Feature",
+      "enable": [
+        "OrchardCore.ContentManagement",
+        "OrchardCore.ContentTypes",
+        "OrchardCore.Title",
+        "OrchardCore.Autoroute"
+      ],
+      "disable": []
+    }
+  ]
 }
 ```
 
@@ -52,29 +56,33 @@ You are an Orchard Core expert. Generate a recipe JSON file for configuring an O
 
 ```json
 {
-  "name": "ContentDefinition",
-  "ContentTypes": [
+  "steps": [
     {
-      "Name": "{{ContentTypeName}}",
-      "DisplayName": "{{DisplayName}}",
-      "Settings": {
-        "ContentTypeSettings": {
-          "Creatable": true,
-          "Listable": true,
-          "Draftable": true,
-          "Versionable": true
-        }
-      },
-      "ContentTypePartDefinitionRecords": [
+      "name": "ContentDefinition",
+      "ContentTypes": [
         {
-          "PartName": "TitlePart",
-          "Name": "TitlePart",
-          "Settings": {}
+          "Name": "{{ContentTypeName}}",
+          "DisplayName": "{{DisplayName}}",
+          "Settings": {
+            "ContentTypeSettings": {
+              "Creatable": true,
+              "Listable": true,
+              "Draftable": true,
+              "Versionable": true
+            }
+          },
+          "ContentTypePartDefinitionRecords": [
+            {
+              "PartName": "TitlePart",
+              "Name": "TitlePart",
+              "Settings": {}
+            }
+          ]
         }
-      ]
+      ],
+      "ContentParts": []
     }
-  ],
-  "ContentParts": []
+  ]
 }
 ```
 
@@ -82,17 +90,21 @@ You are an Orchard Core expert. Generate a recipe JSON file for configuring an O
 
 ```json
 {
-  "name": "Content",
-  "data": [
+  "steps": [
     {
-      "ContentItemId": "{{unique-id}}",
-      "ContentType": "{{ContentTypeName}}",
-      "DisplayText": "{{Title}}",
-      "Latest": true,
-      "Published": true,
-      "TitlePart": {
-        "Title": "{{Title}}"
-      }
+      "name": "Content",
+      "data": [
+        {
+          "ContentItemId": "{{unique-id}}",
+          "ContentType": "{{ContentTypeName}}",
+          "DisplayText": "{{Title}}",
+          "Latest": true,
+          "Published": true,
+          "TitlePart": {
+            "Title": "{{Title}}"
+          }
+        }
+      ]
     }
   ]
 }
