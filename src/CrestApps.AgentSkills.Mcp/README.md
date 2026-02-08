@@ -2,18 +2,6 @@
 
 A generic, reusable **MCP (Model Context Protocol)** engine that discovers and exposes **Agent Skills** as MCP Prompts and Resources. Built on the [MCP C# SDK](https://github.com/modelcontextprotocol/csharp-sdk).
 
-This package is **framework-agnostic** and independent of Orchard Core. Any application can use it to expose its own skills via MCP.
-
-## Role in CrestApps.AgentSkills
-
-`CrestApps.AgentSkills.Mcp` is the generic MCP engine in the CrestApps.AgentSkills repository. It solves the problem of repeatedly implementing skill file parsing and MCP provider wiring by offering a reusable, framework-agnostic library.
-
-## Who Is This For?
-
-- **Any .NET application** that wants to expose Agent Skills via MCP
-- Developers building custom AI skill libraries
-- Teams that want a reusable MCP skill engine without Orchard Core dependencies
-
 For Orchard Core–specific skills, see the companion package [`CrestApps.OrchardCore.AgentSkills.Mcp`](../CrestApps.OrchardCore.AgentSkills.Mcp/README.md), which builds on top of this project and bundles Orchard Core skills.
 
 ## Install
@@ -41,7 +29,7 @@ To register the skill services in DI without eagerly loading them:
 builder.Services.AddAgentSkillServices();
 ```
 
-The consumer is then responsible for resolving `IPromptProvider` and `IResourceProvider` and attaching them to the MCP server.
+The consumer is then responsible for resolving `IMcpPromptProvider` and `IMcpResourceProvider` and attaching them to the MCP server.
 
 ### With Custom Path
 
@@ -62,12 +50,12 @@ The file store and providers are registered as singletons and can be injected:
 ```csharp
 public sealed class MyService
 {
-    private readonly IPromptProvider _promptProvider;
-    private readonly IResourceProvider _resourceProvider;
+    private readonly IMcpPromptProvider _promptProvider;
+    private readonly IMcpResourceProvider _resourceProvider;
 
     public MyService(
-        IPromptProvider promptProvider,
-        IResourceProvider resourceProvider)
+        IMcpPromptProvider promptProvider,
+        IMcpResourceProvider resourceProvider)
     {
         _promptProvider = promptProvider;
         _resourceProvider = resourceProvider;
@@ -154,10 +142,9 @@ Each skill directory may include a `references/` subdirectory containing additio
 
 | Service | Lifetime | Purpose |
 |---|---|---|
-| `ISkillFileStore` | Singleton | Abstraction for skill file access |
-| `PhysicalSkillFileStore` | Singleton | Concrete implementation using `System.IO` |
-| `IPromptProvider` | Singleton | Reads skill files → cached `McpServerPrompt` instances |
-| `IResourceProvider` | Singleton | Reads skill + reference files → cached `McpServerResource` instances |
+| `ISkillFilesStore` | Singleton | Abstraction for skill file access |
+| `IMcpPromptProvider` | Singleton | Reads skill files → cached `McpServerPrompt` instances |
+| `IMcpResourceProvider` | Singleton | Reads skill + reference files → cached `McpServerResource` instances |
 
 ### Parsers
 
@@ -171,7 +158,7 @@ Each skill directory may include a `references/` subdirectory containing additio
 
 1. Place skill directories under `.agents/skills/` (or a custom path).
 2. Each skill directory contains a `SKILL.md`, `SKILL.yaml`, or `SKILL.yml` file.
-3. `AddAgentSkills()` registers `ISkillFileStore`, `IPromptProvider`, and `IResourceProvider` as singletons.
+3. `AddAgentSkills()` registers `ISkillFilesStore`, `IMcpPromptProvider`, and `IMcpResourceProvider` as singletons.
 4. At runtime, providers discover skill files, parse metadata, and create MCP prompts/resources.
 5. Results are cached after the first call for optimal performance.
 6. MCP clients can discover and use these prompts and resources via the MCP protocol.
@@ -196,7 +183,7 @@ Place your skill files in a directory and use the test infrastructure:
 
 ```csharp
 var fileStore = new PhysicalSkillFileStore("/path/to/skills");
-IPromptProvider provider = new SkillPromptProvider(fileStore, NullLogger<SkillPromptProvider>.Instance);
+var provider = new SkillPromptProvider(fileStore, NullLogger<SkillPromptProvider>.Instance);
 var prompts = await provider.GetPromptsAsync();
 ```
 
@@ -205,13 +192,13 @@ var prompts = await provider.GetPromptsAsync();
 ```
 CrestApps.AgentSkills.Mcp              ← Generic, reusable MCP engine (this package)
         ↑
-CrestApps.OrchardCore.AgentSkills.Mcp  ← Orchard Core distribution with bundled skills
+CrestApps.OrchardCore.AgentSkills.Mcp  ← Distribution with bundled skills
 ```
 
 | Package | Purpose |
 |---|---|
 | `CrestApps.AgentSkills.Mcp` | Generic MCP engine — any application can use this |
-| `CrestApps.OrchardCore.AgentSkills.Mcp` | Orchard Core–specific — bundles Orchard Core skills |
+| `CrestApps.OrchardCore.AgentSkills.Mcp` | Distribution with bundled skills |
 | `CrestApps.OrchardCore.AgentSkills` | Dev/design-time — copies skills to solution root |
 
 ## Requirements

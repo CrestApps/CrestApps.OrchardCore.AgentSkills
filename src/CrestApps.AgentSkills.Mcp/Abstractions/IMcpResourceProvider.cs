@@ -5,7 +5,7 @@ namespace CrestApps.AgentSkills.Mcp.Abstractions;
 /// <summary>
 /// Abstraction for loading MCP resources from skill files.
 /// </summary>
-public interface IResourceProvider
+public interface IMcpResourceProvider
 {
     /// <summary>
     /// Discovers skill resources and returns MCP resource instances.

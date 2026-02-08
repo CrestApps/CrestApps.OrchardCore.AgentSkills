@@ -7,7 +7,7 @@ namespace CrestApps.AgentSkills.Mcp.Services;
 /// A file store implementation that reads skill files from the physical filesystem
 /// using <see cref="System.IO"/> APIs. Requires no external framework dependencies.
 /// </summary>
-public sealed class PhysicalSkillFileStore : ISkillFileStore
+public sealed class PhysicalSkillFileStore : ISkillFilesStore
 {
     private readonly string _basePath;
 
