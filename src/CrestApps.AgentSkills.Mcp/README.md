@@ -191,15 +191,9 @@ var prompts = await provider.GetPromptsAsync();
 
 ```
 CrestApps.AgentSkills.Mcp              ← Generic, reusable MCP engine (this package)
-        ↑
-CrestApps.OrchardCore.AgentSkills.Mcp  ← Distribution with bundled skills
 ```
 
-| Package | Purpose |
-|---|---|
-| `CrestApps.AgentSkills.Mcp` | Generic MCP engine — any application can use this |
-| `CrestApps.OrchardCore.AgentSkills.Mcp` | Distribution with bundled skills |
-| `CrestApps.OrchardCore.AgentSkills` | Dev/design-time — copies skills to solution root |
+This is the base package that other skill distribution packages can build upon.
 
 ## Requirements
 
