@@ -299,7 +299,7 @@ public sealed class ApiEndpointResourceHandler : IMcpResourceTypeHandler
           "Source": "file",
           "DisplayText": "Site Configuration",
           "Resource": {
-            "Uri": "file://config1/app/appsettings.json",
+            "Uri": "file://main-config/app/appsettings.json",
             "Name": "site-config",
             "Description": "Main application configuration",
             "MimeType": "application/json"
@@ -309,7 +309,7 @@ public sealed class ApiEndpointResourceHandler : IMcpResourceTypeHandler
           "Source": "content",
           "DisplayText": "Blog Articles",
           "Resource": {
-            "Uri": "content://articles1/BlogPost/list",
+            "Uri": "content://blog-articles/BlogPost/list",
             "Name": "blog-articles",
             "Description": "List of all blog articles",
             "MimeType": "application/json"
