@@ -23,9 +23,16 @@ You are an Orchard Core expert. Generate code and configuration for creating a c
 ```csharp
 public sealed class Migrations : DataMigration
 {
-    public int Create()
+    private readonly IContentDefinitionManager _contentDefinitionManager;
+
+    public Migrations(IContentDefinitionManager contentDefinitionManager)
     {
-        _contentDefinitionManager.AlterTypeDefinition("{{ContentTypeName}}", type => type
+        _contentDefinitionManager = contentDefinitionManager;
+    }
+
+    public async Task<int> CreateAsync()
+    {
+        await _contentDefinitionManager.AlterTypeDefinitionAsync("{{ContentTypeName}}", type => type
             .DisplayedAs("{{DisplayName}}")
             .Creatable()
             .Listable()
@@ -39,7 +46,7 @@ public sealed class Migrations : DataMigration
                 .WithSettings(new AutoroutePartSettings
                 {
                     AllowCustomPath = true,
-                    Pattern = "{{ slug }}"
+                    Pattern = "{{ ContentItem | display_text | slugify }}"
                 })
             )
         );
@@ -54,7 +61,7 @@ public sealed class Migrations : DataMigration
 When adding fields to a content part:
 
 ```csharp
-_contentDefinitionManager.AlterPartDefinition("{{PartName}}", part => part
+await _contentDefinitionManager.AlterPartDefinitionAsync("{{PartName}}", part => part
     .WithField("{{FieldName}}", field => field
         .OfType("{{FieldType}}")
         .WithDisplayName("{{FieldDisplayName}}")

@@ -284,7 +284,7 @@ using OrchardCore.DisplayManagement.Descriptors;
 
 public sealed class ContentShapeTableProvider : IShapeTableProvider
 {
-    public void Discover(ShapeTableBuilder builder)
+    public ValueTask DiscoverAsync(ShapeTableBuilder builder)
     {
         builder.Describe("Content")
             .OnDisplaying(context =>
@@ -304,6 +304,8 @@ public sealed class ContentShapeTableProvider : IShapeTableProvider
                     }
                 }
             });
+
+        return ValueTask.CompletedTask;
     }
 }
 ```
@@ -313,7 +315,7 @@ public sealed class ContentShapeTableProvider : IShapeTableProvider
 ```csharp
 public sealed class WidgetShapeTableProvider : IShapeTableProvider
 {
-    public void Discover(ShapeTableBuilder builder)
+    public ValueTask DiscoverAsync(ShapeTableBuilder builder)
     {
         builder.Describe("Widget")
             .OnDisplaying(context =>
@@ -321,6 +323,8 @@ public sealed class WidgetShapeTableProvider : IShapeTableProvider
                 // Wrap all widgets with a wrapper template
                 context.Shape.Metadata.Wrappers.Add("Widget_Wrapper");
             });
+
+        return ValueTask.CompletedTask;
     }
 }
 ```

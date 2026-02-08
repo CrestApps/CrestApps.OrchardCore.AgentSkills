@@ -181,7 +181,7 @@ using OrchardCore.DisplayManagement.Descriptors;
 
 public sealed class MyShapeTableProvider : IShapeTableProvider
 {
-    public void Discover(ShapeTableBuilder builder)
+    public ValueTask DiscoverAsync(ShapeTableBuilder builder)
     {
         builder.Describe("Content")
             .OnDisplaying(context =>
@@ -189,6 +189,8 @@ public sealed class MyShapeTableProvider : IShapeTableProvider
                 // Add alternates, wrappers, etc.
                 context.Shape.Metadata.Alternates.Add("Content__{{ContentType}}");
             });
+
+        return ValueTask.CompletedTask;
     }
 }
 ```

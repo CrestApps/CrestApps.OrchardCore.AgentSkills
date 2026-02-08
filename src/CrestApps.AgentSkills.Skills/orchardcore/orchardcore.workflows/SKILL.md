@@ -73,6 +73,13 @@ using OrchardCore.Workflows.Models;
 
 public sealed class MyCustomTask : TaskActivity
 {
+    private readonly IStringLocalizer S;
+
+    public MyCustomTask(IStringLocalizer<MyCustomTask> localizer)
+    {
+        S = localizer;
+    }
+
     public override string Name => "MyCustomTask";
 
     public override LocalizedString DisplayText => S["My Custom Task"];
@@ -111,6 +118,13 @@ using OrchardCore.Workflows.Models;
 
 public sealed class MyCustomEvent : EventActivity
 {
+    private readonly IStringLocalizer S;
+
+    public MyCustomEvent(IStringLocalizer<MyCustomEvent> localizer)
+    {
+        S = localizer;
+    }
+
     public override string Name => "MyCustomEvent";
 
     public override LocalizedString DisplayText => S["My Custom Event"];

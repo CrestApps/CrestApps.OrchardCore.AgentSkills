@@ -11,7 +11,7 @@ You are an Orchard Core expert. Generate migration code and recipes for attachin
 
 ### Guidelines
 
-- Parts are attached to content types using `AlterTypeDefinition` in a migration.
+- Parts are attached to content types using `AlterTypeDefinitionAsync` in a migration.
 - Each part has specific settings that control its behavior.
 - Part settings are applied via `.WithSettings(new XxxPartSettings { ... })`.
 - Use `.WithPosition("N")` to control the order of parts in the editor.

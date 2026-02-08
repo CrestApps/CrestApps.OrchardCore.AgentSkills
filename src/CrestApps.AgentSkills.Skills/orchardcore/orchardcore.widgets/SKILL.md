@@ -40,25 +40,35 @@ You are an Orchard Core expert. Generate widget definitions, layer configuration
 ### Creating a Widget Content Type
 
 ```csharp
-public int Create()
+public sealed class Migrations : DataMigration
 {
-    _contentDefinitionManager.AlterTypeDefinition("{{WidgetName}}", type => type
-        .DisplayedAs("{{WidgetDisplayName}}")
-        .Stereotype("Widget")
-        .WithPart("{{WidgetName}}", part => part
-            .WithPosition("0")
-        )
-    );
+    private readonly IContentDefinitionManager _contentDefinitionManager;
 
-    _contentDefinitionManager.AlterPartDefinition("{{WidgetName}}", part => part
-        .WithField("{{FieldName}}", field => field
-            .OfType("{{FieldType}}")
-            .WithDisplayName("{{FieldDisplayName}}")
-            .WithPosition("0")
-        )
-    );
+    public Migrations(IContentDefinitionManager contentDefinitionManager)
+    {
+        _contentDefinitionManager = contentDefinitionManager;
+    }
 
-    return 1;
+    public async Task<int> CreateAsync()
+    {
+        await _contentDefinitionManager.AlterTypeDefinitionAsync("{{WidgetName}}", type => type
+            .DisplayedAs("{{WidgetDisplayName}}")
+            .Stereotype("Widget")
+            .WithPart("{{WidgetName}}", part => part
+                .WithPosition("0")
+            )
+        );
+
+        await _contentDefinitionManager.AlterPartDefinitionAsync("{{WidgetName}}", part => part
+            .WithField("{{FieldName}}", field => field
+                .OfType("{{FieldType}}")
+                .WithDisplayName("{{FieldDisplayName}}")
+                .WithPosition("0")
+            )
+        );
+
+        return 1;
+    }
 }
 ```
 
@@ -193,7 +203,7 @@ Create a template at `Views/Widget-{{WidgetName}}.cshtml`:
 Allow widgets inside content items using `FlowPart`:
 
 ```csharp
-_contentDefinitionManager.AlterTypeDefinition("Page", type => type
+await _contentDefinitionManager.AlterTypeDefinitionAsync("Page", type => type
     .WithPart("FlowPart")
 );
 ```

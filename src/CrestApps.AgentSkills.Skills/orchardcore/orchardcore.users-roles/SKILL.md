@@ -154,7 +154,7 @@ Extend user profiles with custom settings by enabling `OrchardCore.Users.CustomU
 
 ```csharp
 // Define a custom user settings content type via migration
-_contentDefinitionManager.AlterTypeDefinition("UserProfile", type => type
+await _contentDefinitionManager.AlterTypeDefinitionAsync("UserProfile", type => type
     .DisplayedAs("User Profile")
     .Stereotype("CustomUserSettings")
     .WithPart("UserProfile", part => part
@@ -162,7 +162,7 @@ _contentDefinitionManager.AlterTypeDefinition("UserProfile", type => type
     )
 );
 
-_contentDefinitionManager.AlterPartDefinition("UserProfile", part => part
+await _contentDefinitionManager.AlterPartDefinitionAsync("UserProfile", part => part
     .WithField("Bio", field => field
         .OfType("TextField")
         .WithDisplayName("Bio")

@@ -11,7 +11,7 @@ You are an Orchard Core expert. Generate migration code and recipes for adding c
 
 ### Guidelines
 
-- Fields are added to content parts using `AlterPartDefinition` in a migration.
+- Fields are added to content parts using `AlterPartDefinitionAsync` in a migration.
 - Each field has a `FieldSettings` base with `Hint` (string) and `Required` (bool).
 - Each field type has its own specific settings class (e.g., `TextFieldSettings`, `NumericFieldSettings`).
 - Fields also have `ContentPartFieldSettings` controlling `DisplayName`, `Description`, `Editor`, `DisplayMode`, and `Position`.

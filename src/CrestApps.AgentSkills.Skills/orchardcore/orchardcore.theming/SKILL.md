@@ -46,6 +46,7 @@ using OrchardCore.DisplayManagement.Manifest;
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="OrchardCore.DisplayManagement" Version="2.*" />
     <PackageReference Include="OrchardCore.Theme.Targets" Version="2.*" />
   </ItemGroup>
 
