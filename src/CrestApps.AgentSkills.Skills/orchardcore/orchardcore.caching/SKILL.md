@@ -1,6 +1,10 @@
 ---
 name: orchardcore.caching
 description: Skill for configuring and managing caching in Orchard Core. Covers response compression, dynamic cache, shape caching, cache tag helpers, ISignal-based invalidation, distributed cache with Redis, cache profiles, and CacheContext dependencies.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Caching - Prompt Templates

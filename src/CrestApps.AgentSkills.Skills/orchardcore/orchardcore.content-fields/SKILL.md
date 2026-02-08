@@ -1,6 +1,10 @@
 ---
 name: orchardcore.content-fields
 description: Skill for adding and configuring content fields in Orchard Core. Covers every built-in field type with all available settings, editor options, display modes, and migration code patterns.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Content Fields - Prompt Templates

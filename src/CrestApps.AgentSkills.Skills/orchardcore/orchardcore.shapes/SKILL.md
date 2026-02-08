@@ -1,6 +1,10 @@
 ---
 name: orchardcore.shapes
 description: Skill for working with shapes in Orchard Core's display management system. Covers shape creation, shape templates (Liquid and Razor), shape alternates, shape wrappers, shape metadata, ad-hoc shapes, IShapeFactory usage, IShapeTableProvider, and rendering shapes in Liquid templates.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Shapes - Prompt Templates

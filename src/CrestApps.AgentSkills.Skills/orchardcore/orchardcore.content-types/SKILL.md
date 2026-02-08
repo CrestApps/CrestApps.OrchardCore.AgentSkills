@@ -1,6 +1,10 @@
 ---
 name: orchardcore.content-types
 description: Skill for creating, managing, and configuring Orchard Core Content Types. Covers content part definitions, content field definitions, stereotypes, and content type indexing.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Content Types - Prompt Templates

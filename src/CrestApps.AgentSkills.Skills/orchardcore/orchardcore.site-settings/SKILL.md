@@ -1,6 +1,10 @@
 ---
 name: orchardcore.site-settings
 description: Skill for accessing and extending Orchard Core site-level configuration. Covers ISiteService, custom settings sections with the CustomSettings stereotype, SiteSettingsDisplayDriver pattern, admin navigation registration, and recipe-based configuration.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Site Settings - Prompt Templates

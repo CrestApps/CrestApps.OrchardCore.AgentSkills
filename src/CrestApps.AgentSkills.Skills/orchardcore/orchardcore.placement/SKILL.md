@@ -1,6 +1,10 @@
 ---
 name: orchardcore.placement
 description: Skill for configuring shape placement in Orchard Core. Covers placement.json files, IShapePlacementProvider, shape alternates, wrappers, and zone/position configuration.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Placement - Prompt Templates

@@ -1,6 +1,10 @@
 ---
 name: orchardcore.features
 description: Explains OrchardCore feature management including enabling and disabling features, programmatic control with IShellFeaturesManager, feature dependencies, conditional service registration, feature event handlers, recipe-based activation, and a catalog of commonly used features organized by category.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # OrchardCore Features

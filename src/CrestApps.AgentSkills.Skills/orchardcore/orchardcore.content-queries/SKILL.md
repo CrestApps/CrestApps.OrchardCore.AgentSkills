@@ -1,6 +1,10 @@
 ---
 name: orchardcore.content-queries
 description: Skill for querying content items in Orchard Core using YesSql. Covers ContentItemIndex queries, custom index creation, ISession usage, IContentManager queries, and query optimization patterns.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Content Queries - Prompt Templates

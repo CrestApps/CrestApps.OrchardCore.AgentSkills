@@ -1,6 +1,10 @@
 ---
 name: orchardcore.seo
 description: Skill for configuring SEO in Orchard Core. Covers SeoMetaPart for meta tags and social sharing, sitemap generation and indexing, canonical URLs, robots.txt, structured data with JSON-LD, and SEO-friendly URL patterns.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core SEO - Prompt Templates

@@ -1,6 +1,10 @@
 ---
 name: orchardcore.search-indexing
 description: Skill for configuring search and indexing in Orchard Core. Covers Lucene indexing, Elasticsearch integration, search settings, index definitions, and search queries.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Search & Indexing - Prompt Templates

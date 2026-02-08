@@ -1,6 +1,10 @@
 ---
 name: orchardcore.razor
 description: Skill for building Razor views in Orchard Core themes and modules. Covers tag helpers, shape rendering, resource management, IOrchardHelper extensions, layout patterns, and _ViewImports.cshtml setup.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Razor Views - Prompt Templates

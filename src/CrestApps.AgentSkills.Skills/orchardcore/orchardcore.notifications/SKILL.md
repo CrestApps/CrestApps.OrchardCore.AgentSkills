@@ -1,6 +1,10 @@
 ---
 name: orchardcore.notifications
 description: Skill for managing Orchard Core notifications. Covers INotificationService, notification providers, notification events, push notifications, notification workflow activities, and custom notification handlers.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Notifications - Prompt Templates

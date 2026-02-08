@@ -1,6 +1,10 @@
 ---
 name: orchardcore.workflows
 description: Skill for creating and managing Orchard Core workflows. Covers workflow type definitions, custom activities, events, workflow expressions, and workflow triggers.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Workflows - Prompt Templates

@@ -1,6 +1,10 @@
 ---
 name: orchardcore.liquid
 description: Skill for using Liquid templates in Orchard Core. Covers Liquid syntax, Orchard Core-specific filters and tags, shape rendering, content access, and Liquid best practices.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Liquid - Prompt Templates

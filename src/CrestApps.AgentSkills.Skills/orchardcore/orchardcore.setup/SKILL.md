@@ -1,6 +1,10 @@
 ---
 name: orchardcore.setup
 description: Skill for creating and setting up Orchard Core web applications. Covers project creation, CMS module configuration, adding modules to the web project, running setup, testing with the Blog recipe, and configuring tenants for multi-site testing.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Setup - Prompt Templates

@@ -1,6 +1,10 @@
 ---
 name: orchardcore.recipes
 description: Skill for creating Orchard Core recipes. Covers recipe structure, content type definitions, content items, feature enablement, and recipe steps.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Recipes - Prompt Templates

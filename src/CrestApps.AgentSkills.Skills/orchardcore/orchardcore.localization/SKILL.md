@@ -1,6 +1,10 @@
 ---
 name: orchardcore.localization
 description: Skill for configuring localization and multi-language support in Orchard Core. Covers culture settings, content localization, PO file translations, and localization configuration.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Localization - Prompt Templates

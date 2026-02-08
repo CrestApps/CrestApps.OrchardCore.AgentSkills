@@ -1,6 +1,10 @@
 ---
 name: orchardcore.display-management
 description: Skill for using Orchard Core's display management system. Covers display drivers, display managers, shapes, display types, shape table providers, placement, and editor/display mode patterns.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Display Management - Prompt Templates

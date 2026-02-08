@@ -1,6 +1,10 @@
 ---
 name: orchardcore.background-tasks
 description: Skill for creating background tasks and scheduled jobs in Orchard Core. Covers IBackgroundTask implementation, scheduling configuration, and background service patterns.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Background Tasks - Prompt Templates

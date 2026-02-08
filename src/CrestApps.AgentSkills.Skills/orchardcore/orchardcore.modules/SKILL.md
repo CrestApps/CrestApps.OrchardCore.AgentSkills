@@ -1,6 +1,10 @@
 ---
 name: orchardcore.modules
 description: Skill for creating and structuring Orchard Core modules. Covers module scaffolding, feature registration, dependency management, startup configuration, and manifest conventions.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Modules - Prompt Templates

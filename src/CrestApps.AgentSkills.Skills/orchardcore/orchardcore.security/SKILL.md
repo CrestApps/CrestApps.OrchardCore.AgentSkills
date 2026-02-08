@@ -1,6 +1,10 @@
 ---
 name: orchardcore.security
 description: Skill for configuring security and authorization in Orchard Core. Covers permission definitions, authorization services, CORS, security headers, content security policies, and OpenID Connect.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Security - Prompt Templates

@@ -1,6 +1,10 @@
 ---
 name: orchardcore.forms
 description: Skill for building and managing forms in Orchard Core using the OrchardCore.Forms module. Covers form widget content types, form validation, form submissions with workflows, anti-forgery tokens, and custom form elements.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Forms - Prompt Templates

@@ -1,6 +1,10 @@
 ---
 name: orchardcore.menus
 description: Skill for creating and managing menus in Orchard Core. Covers menu content types, menu item types, menu widgets, navigation rendering, pager shapes, breadcrumbs, and menu customization via shapes and alternates.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Menus - Prompt Templates

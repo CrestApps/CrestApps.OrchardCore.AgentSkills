@@ -1,6 +1,10 @@
 ---
 name: orchardcore.media
 description: Skill for managing media in Orchard Core. Covers media library configuration, media profiles, image processing, media field usage, and storage providers.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Media - Prompt Templates

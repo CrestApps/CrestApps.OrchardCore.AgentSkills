@@ -1,6 +1,10 @@
 ---
 name: orchardcore.data-migrations
 description: Skill for creating data migrations in Orchard Core. Covers content type migrations, YesSql index table creation, schema alterations, data seeding, and migration versioning patterns.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Data Migrations - Prompt Templates

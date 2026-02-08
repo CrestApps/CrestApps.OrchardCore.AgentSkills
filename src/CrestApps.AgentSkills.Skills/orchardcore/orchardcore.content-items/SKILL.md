@@ -1,6 +1,10 @@
 ---
 name: orchardcore.content-items
 description: Skill for working with Orchard Core content items. Covers the content item lifecycle, IContentManager API, content item JSON structure, querying with YesSql, content handlers, recipe import/export, and accessing parts and fields programmatically.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Content Items - Prompt Templates

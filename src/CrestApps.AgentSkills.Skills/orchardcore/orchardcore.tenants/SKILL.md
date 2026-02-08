@@ -1,6 +1,10 @@
 ---
 name: orchardcore.tenants
 description: Skill for configuring multi-tenancy in Orchard Core. Covers tenant creation, SaaS setup, tenant configuration, testing with tenants using different recipes (Blog, Agency), and tenant management APIs.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Tenants - Prompt Templates

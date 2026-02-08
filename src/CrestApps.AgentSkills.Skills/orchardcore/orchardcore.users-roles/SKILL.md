@@ -1,6 +1,10 @@
 ---
 name: orchardcore.users-roles
 description: Skill for managing users, roles, and permissions in Orchard Core. Covers user registration, role creation, permission definitions, custom user settings, and authentication configuration.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Users & Roles - Prompt Templates

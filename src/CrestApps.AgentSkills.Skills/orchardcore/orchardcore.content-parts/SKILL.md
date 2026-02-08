@@ -1,6 +1,10 @@
 ---
 name: orchardcore.content-parts
 description: Skill for adding and configuring built-in content parts in Orchard Core. Covers every built-in content part with all available settings, migration code patterns, and recipe configuration.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Content Parts - Prompt Templates

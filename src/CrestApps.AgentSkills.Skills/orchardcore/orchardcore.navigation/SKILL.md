@@ -1,6 +1,10 @@
 ---
 name: orchardcore.navigation
 description: Skill for creating and managing navigation menus in Orchard Core. Covers menu creation, navigation providers, admin menus, breadcrumbs, and menu content types.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Navigation - Prompt Templates

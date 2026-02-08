@@ -1,6 +1,10 @@
 ---
 name: orchardcore.taxonomies
 description: Skill for creating and managing taxonomies in Orchard Core. Covers taxonomy creation, taxonomy terms, taxonomy fields, and taxonomy-based content organization.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Taxonomies - Prompt Templates

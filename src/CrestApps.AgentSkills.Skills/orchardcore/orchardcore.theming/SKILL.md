@@ -1,6 +1,10 @@
 ---
 name: orchardcore.theming
 description: Skill for creating and customizing Orchard Core themes. Covers theme scaffolding, Liquid and Razor templates, zones, shape templates, asset management, and theme settings.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Theming - Prompt Templates

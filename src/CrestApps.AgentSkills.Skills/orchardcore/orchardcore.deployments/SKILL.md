@@ -1,6 +1,10 @@
 ---
 name: orchardcore.deployments
 description: Skill for configuring Orchard Core deployment plans and steps. Covers deployment plan creation, content export/import, and deployment step configuration.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core Deployments - Prompt Templates

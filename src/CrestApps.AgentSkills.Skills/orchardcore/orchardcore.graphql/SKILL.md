@@ -1,6 +1,10 @@
 ---
 name: orchardcore.graphql
 description: Skill for configuring and using the GraphQL API in Orchard Core. Covers GraphQL queries, custom types, content type querying, and GraphQL schema customization.
+license: Apache-2.0
+metadata:
+  author: CrestApps Team
+  version: "1.0"
 ---
 
 # Orchard Core GraphQL - Prompt Templates
