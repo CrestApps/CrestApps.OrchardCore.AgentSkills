@@ -6,7 +6,7 @@ namespace CrestApps.AgentSkills.Mcp.Abstractions;
 /// Abstraction for accessing skill files and directories.
 /// Provides framework-agnostic file access for MCP skill discovery.
 /// </summary>
-public interface ISkillFileStore
+public interface IAgentSkillFilesStore
 {
     /// <summary>
     /// Enumerates the contents of a directory within the skill file store.

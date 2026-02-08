@@ -34,11 +34,13 @@ After the first build, the solution root will contain:
 ```
 .agents/
   skills/
-    orchardcore.content-types/
-    orchardcore.modules/
-    orchardcore.recipes/
-    orchardcore.deployments/
-    orchardcore.ai/
+    orchardcore/
+      orchardcore.content-types/
+      orchardcore.modules/
+      orchardcore.recipes/
+      orchardcore.deployments/
+      orchardcore.ai/
+      ...
 ```
 
 ## Updating

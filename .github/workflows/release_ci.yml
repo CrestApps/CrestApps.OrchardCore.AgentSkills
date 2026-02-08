@@ -47,75 +47,92 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       shell: bash
       run: |
-        SKILLS_DIR="src/skills/.agents/skills"
+        SKILLS_BASE_DIR="src/CrestApps.AgentSkills.Skills"
         EXIT_CODE=0
 
-        if [ ! -d "$SKILLS_DIR" ]; then
-          echo "::error::Skills directory not found: $SKILLS_DIR"
+        if [ ! -d "$SKILLS_BASE_DIR" ]; then
+          echo "::error::Skills base directory not found: $SKILLS_BASE_DIR"
           exit 1
         fi
 
-        for skill_dir in "$SKILLS_DIR"/*/; do
-          skill_name=$(basename "$skill_dir")
+        # Find all framework directories (e.g., orchardcore, aspnetcore, etc.)
+        # Exclude bin and obj folders
+        FRAMEWORK_DIRS=$(find "$SKILLS_BASE_DIR" -mindepth 1 -maxdepth 1 -type d ! -name "bin" ! -name "obj")
+        
+        if [ -z "$FRAMEWORK_DIRS" ]; then
+          echo "::error::No framework directories found in $SKILLS_BASE_DIR"
+          exit 1
+        fi
 
-          # Check SKILL.md exists.
-          if [ ! -f "$skill_dir/SKILL.md" ]; then
-            echo "::error file=$skill_dir::Skill '$skill_name' is missing SKILL.md"
-            EXIT_CODE=1
-            continue
-          fi
+        # Iterate through each framework directory
+        for framework_dir in $FRAMEWORK_DIRS; do
+          framework_name=$(basename "$framework_dir")
+          echo "Validating skills for framework: $framework_name"
 
-          # Validate front-matter structure.
-          # Must start with ---.
-          FIRST_LINE=$(head -1 "$skill_dir/SKILL.md")
-          if [ "$FIRST_LINE" != "---" ]; then
-            echo "::error file=${skill_dir}SKILL.md::Skill '$skill_name' SKILL.md must start with '---' front-matter delimiter"
-            EXIT_CODE=1
-            continue
-          fi
+          # Iterate through each skill in the framework directory
+          for skill_dir in "$framework_dir"/*/; do
+            [ -d "$skill_dir" ] || continue
+            skill_name=$(basename "$skill_dir")
 
-          # Must have closing ---.
-          CONTENT=$(cat "$skill_dir/SKILL.md")
-          CLOSING_LINE=$(echo "$CONTENT" | tail -n +2 | grep -n "^---$" | head -1 | cut -d: -f1)
-          if [ -z "$CLOSING_LINE" ]; then
-            echo "::error file=${skill_dir}SKILL.md::Skill '$skill_name' SKILL.md is missing closing '---' front-matter delimiter"
-            EXIT_CODE=1
-            continue
-          fi
+            # Check SKILL.md exists.
+            if [ ! -f "$skill_dir/SKILL.md" ]; then
+              echo "::error file=$skill_dir::Skill '$framework_name/$skill_name' is missing SKILL.md"
+              EXIT_CODE=1
+              continue
+            fi
 
-          # Extract front-matter (between the two --- lines).
-          FRONT_MATTER=$(echo "$CONTENT" | sed -n "2,$((CLOSING_LINE))p")
+            # Validate front-matter structure.
+            # Must start with ---.
+            FIRST_LINE=$(head -1 "$skill_dir/SKILL.md")
+            if [ "$FIRST_LINE" != "---" ]; then
+              echo "::error file=${skill_dir}SKILL.md::Skill '$framework_name/$skill_name' SKILL.md must start with '---' front-matter delimiter"
+              EXIT_CODE=1
+              continue
+            fi
 
-          # Check required 'name' field.
-          if ! echo "$FRONT_MATTER" | grep -q "^name:"; then
-            echo "::error file=${skill_dir}SKILL.md::Skill '$skill_name' SKILL.md is missing required 'name' field in front-matter"
-            EXIT_CODE=1
-          fi
+            # Must have closing ---.
+            CONTENT=$(cat "$skill_dir/SKILL.md")
+            CLOSING_LINE=$(echo "$CONTENT" | tail -n +2 | grep -n "^---$" | head -1 | cut -d: -f1)
+            if [ -z "$CLOSING_LINE" ]; then
+              echo "::error file=${skill_dir}SKILL.md::Skill '$framework_name/$skill_name' SKILL.md is missing closing '---' front-matter delimiter"
+              EXIT_CODE=1
+              continue
+            fi
 
-          # Check required 'description' field.
-          if ! echo "$FRONT_MATTER" | grep -q "^description:"; then
-            echo "::error file=${skill_dir}SKILL.md::Skill '$skill_name' SKILL.md is missing required 'description' field in front-matter"
-            EXIT_CODE=1
-          fi
+            # Extract front-matter (between the two --- lines).
+            FRONT_MATTER=$(echo "$CONTENT" | sed -n "2,$((CLOSING_LINE))p")
 
-          # Validate directory name matches skill name.
-          SKILL_NAME_VALUE=$(echo "$FRONT_MATTER" | grep "^name:" | sed 's/^name:[[:space:]]*//')
-          if [ "$SKILL_NAME_VALUE" != "$skill_name" ]; then
-            echo "::error file=${skill_dir}SKILL.md::Skill name '$SKILL_NAME_VALUE' in front-matter does not match directory name '$skill_name'"
-            EXIT_CODE=1
-          fi
+            # Check required 'name' field.
+            if ! echo "$FRONT_MATTER" | grep -q "^name:"; then
+              echo "::error file=${skill_dir}SKILL.md::Skill '$framework_name/$skill_name' SKILL.md is missing required 'name' field in front-matter"
+              EXIT_CODE=1
+            fi
 
-          # Check that no old-format files exist.
-          if [ -f "$skill_dir/skill.yaml" ]; then
-            echo "::error file=${skill_dir}skill.yaml::Skill '$skill_name' contains deprecated skill.yaml file. Use SKILL.md with front-matter instead."
-            EXIT_CODE=1
-          fi
-          if [ -f "$skill_dir/prompts.md" ]; then
-            echo "::error file=${skill_dir}prompts.md::Skill '$skill_name' contains deprecated prompts.md file. Merge content into SKILL.md."
-            EXIT_CODE=1
-          fi
+            # Check required 'description' field.
+            if ! echo "$FRONT_MATTER" | grep -q "^description:"; then
+              echo "::error file=${skill_dir}SKILL.md::Skill '$framework_name/$skill_name' SKILL.md is missing required 'description' field in front-matter"
+              EXIT_CODE=1
+            fi
 
-          echo "✓ $skill_name"
+            # Validate directory name matches skill name.
+            SKILL_NAME_VALUE=$(echo "$FRONT_MATTER" | grep "^name:" | sed 's/^name:[[:space:]]*//')
+            if [ "$SKILL_NAME_VALUE" != "$skill_name" ]; then
+              echo "::error file=${skill_dir}SKILL.md::Skill name '$SKILL_NAME_VALUE' in front-matter does not match directory name '$skill_name' for '$framework_name/$skill_name'"
+              EXIT_CODE=1
+            fi
+
+            # Check that no old-format files exist.
+            if [ -f "$skill_dir/skill.yaml" ]; then
+              echo "::error file=${skill_dir}skill.yaml::Skill '$framework_name/$skill_name' contains deprecated skill.yaml file. Use SKILL.md with front-matter instead."
+              EXIT_CODE=1
+            fi
+            if [ -f "$skill_dir/prompts.md" ]; then
+              echo "::error file=${skill_dir}prompts.md::Skill '$framework_name/$skill_name' contains deprecated prompts.md file. Merge content into SKILL.md."
+              EXIT_CODE=1
+            fi
+
+            echo "✓ $framework_name/$skill_name"
+          done
         done
 
         if [ $EXIT_CODE -ne 0 ]; then
@@ -154,12 +171,12 @@ jobs:
 
         validate_project \
           "src/CrestApps.OrchardCore.AgentSkills/CrestApps.OrchardCore.AgentSkills.csproj" \
-          '..\skills\.agents\skills\**\*' \
+          '..\CrestApps.AgentSkills.Skills\orchardcore\**\*' \
           'PackagePath="skills"'
 
         validate_project \
           "src/CrestApps.OrchardCore.AgentSkills.Mcp/CrestApps.OrchardCore.AgentSkills.Mcp.csproj" \
-          '..\skills\.agents\skills\**\*' \
+          '..\CrestApps.AgentSkills.Skills\orchardcore\**\*' \
           'PackagePath="contentFiles\any\any\.agents\skills"'
     - name: Deploy release NuGet packages
       if: matrix.os == 'ubuntu-latest'

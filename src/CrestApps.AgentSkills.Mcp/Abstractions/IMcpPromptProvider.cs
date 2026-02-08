@@ -5,7 +5,7 @@ namespace CrestApps.AgentSkills.Mcp.Abstractions;
 /// <summary>
 /// Abstraction for loading MCP prompts from skill files.
 /// </summary>
-public interface IPromptProvider
+public interface IMcpPromptProvider
 {
     /// <summary>
     /// Discovers skill prompts and returns MCP prompt instances.
