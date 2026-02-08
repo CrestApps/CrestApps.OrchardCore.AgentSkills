@@ -6,7 +6,7 @@ using ModelContextProtocol.Server;
 namespace CrestApps.AgentSkills.Mcp.Providers;
 
 /// <summary>
-/// Loads skill resource files via <see cref="ISkillFilesStore"/>
+/// Loads skill resource files via <see cref="IAgentSkillFilesStore"/>
 /// and produces <see cref="McpServerResource"/> instances for MCP registration.
 /// Each skill file (SKILL.md, SKILL.yaml, SKILL.yml) and <c>references/*.md</c>
 /// file becomes a resource.
@@ -14,12 +14,12 @@ namespace CrestApps.AgentSkills.Mcp.Providers;
 /// </summary>
 public sealed class SkillResourceProvider : IMcpResourceProvider
 {
-    private readonly ISkillFilesStore _fileStore;
+    private readonly IAgentSkillFilesStore _fileStore;
     private readonly ILogger<SkillResourceProvider> _logger;
     private IReadOnlyList<McpServerResource>? _resources;
 
     public SkillResourceProvider(
-        ISkillFilesStore fileStore,
+        IAgentSkillFilesStore fileStore,
         ILogger<SkillResourceProvider> logger)
     {
         ArgumentNullException.ThrowIfNull(fileStore);

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -15,7 +15,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="..\skills\.agents\skills\**\*" Pack="true" PackagePath="contentFiles\any\any\.agents\skills" BuildAction="Content" CopyToOutputDirectory="PreserveNewest" Visible="false">
+		<Content Include="..\CrestApps.AgentSkills.Skills\orchardcore\**\*"
+				 Pack="true"
+				 PackagePath="contentFiles\any\any\.agents\skills"
+				 BuildAction="Content"
+				 CopyToOutputDirectory="PreserveNewest"
+				 Visible="false">
 			<PackageCopyToOutput>true</PackageCopyToOutput>
 		</Content>
 	</ItemGroup>

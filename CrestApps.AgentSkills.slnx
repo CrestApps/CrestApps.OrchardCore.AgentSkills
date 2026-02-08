@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/CrestApps.AgentSkills.Mcp/CrestApps.AgentSkills.Mcp.csproj" />
     <Project Path="src/CrestApps.AgentSkills.Skills/CrestApps.AgentSkills.Skills.csproj" Id="a329b145-575b-43cf-b87a-a689f6e65646" />

@@ -26,7 +26,7 @@ public sealed class PhysicalSkillFileStoreTests : IDisposable
     {
         await File.WriteAllTextAsync(Path.Combine(_tempDir, "test.txt"), "content");
 
-        var store = new PhysicalSkillFileStore(_tempDir);
+        var store = new DefaultAgentSkillFilesStore(_tempDir);
         var info = await store.GetFileInfoAsync("test.txt");
 
         Assert.NotNull(info);
@@ -37,7 +37,7 @@ public sealed class PhysicalSkillFileStoreTests : IDisposable
     [Fact]
     public async Task GetFileInfoAsync_NonExistentFile_ReturnsNull()
     {
-        var store = new PhysicalSkillFileStore(_tempDir);
+        var store = new DefaultAgentSkillFilesStore(_tempDir);
         var info = await store.GetFileInfoAsync("missing.txt");
 
         Assert.Null(info);
@@ -48,7 +48,7 @@ public sealed class PhysicalSkillFileStoreTests : IDisposable
     {
         Directory.CreateDirectory(Path.Combine(_tempDir, "subdir"));
 
-        var store = new PhysicalSkillFileStore(_tempDir);
+        var store = new DefaultAgentSkillFilesStore(_tempDir);
         var info = await store.GetDirectoryInfoAsync("subdir");
 
         Assert.NotNull(info);
@@ -59,7 +59,7 @@ public sealed class PhysicalSkillFileStoreTests : IDisposable
     [Fact]
     public async Task GetDirectoryInfoAsync_NonExistentDirectory_ReturnsNull()
     {
-        var store = new PhysicalSkillFileStore(_tempDir);
+        var store = new DefaultAgentSkillFilesStore(_tempDir);
         var info = await store.GetDirectoryInfoAsync("missing");
 
         Assert.Null(info);
@@ -71,7 +71,7 @@ public sealed class PhysicalSkillFileStoreTests : IDisposable
         var expected = "Hello, World!";
         await File.WriteAllTextAsync(Path.Combine(_tempDir, "read.txt"), expected);
 
-        var store = new PhysicalSkillFileStore(_tempDir);
+        var store = new DefaultAgentSkillFilesStore(_tempDir);
         await using var stream = await store.GetFileStreamAsync("read.txt");
         using var reader = new StreamReader(stream);
         var content = await reader.ReadToEndAsync();
@@ -86,7 +86,7 @@ public sealed class PhysicalSkillFileStoreTests : IDisposable
         Directory.CreateDirectory(Path.Combine(_tempDir, "dir2"));
         await File.WriteAllTextAsync(Path.Combine(_tempDir, "file1.txt"), "content");
 
-        var store = new PhysicalSkillFileStore(_tempDir);
+        var store = new DefaultAgentSkillFilesStore(_tempDir);
         var entries = new List<Models.SkillFileEntry>();
         await foreach (var entry in store.GetDirectoryContentAsync(null))
         {
@@ -101,7 +101,7 @@ public sealed class PhysicalSkillFileStoreTests : IDisposable
     [Fact]
     public async Task GetDirectoryContentAsync_EmptyDirectory_ReturnsEmpty()
     {
-        var store = new PhysicalSkillFileStore(_tempDir);
+        var store = new DefaultAgentSkillFilesStore(_tempDir);
         var entries = new List<Models.SkillFileEntry>();
         await foreach (var entry in store.GetDirectoryContentAsync(null))
         {
@@ -114,7 +114,7 @@ public sealed class PhysicalSkillFileStoreTests : IDisposable
     [Fact]
     public async Task GetDirectoryContentAsync_NonExistentPath_ReturnsEmpty()
     {
-        var store = new PhysicalSkillFileStore(_tempDir);
+        var store = new DefaultAgentSkillFilesStore(_tempDir);
         var entries = new List<Models.SkillFileEntry>();
         await foreach (var entry in store.GetDirectoryContentAsync("nonexistent"))
         {
@@ -127,8 +127,8 @@ public sealed class PhysicalSkillFileStoreTests : IDisposable
     [Fact]
     public void Constructor_ThrowsOnNullOrWhitespacePath()
     {
-        Assert.Throws<ArgumentNullException>(() => new PhysicalSkillFileStore(null!));
-        Assert.Throws<ArgumentException>(() => new PhysicalSkillFileStore(""));
-        Assert.Throws<ArgumentException>(() => new PhysicalSkillFileStore("   "));
+        Assert.Throws<ArgumentNullException>(() => new DefaultAgentSkillFilesStore(null!));
+        Assert.Throws<ArgumentException>(() => new DefaultAgentSkillFilesStore(""));
+        Assert.Throws<ArgumentException>(() => new DefaultAgentSkillFilesStore("   "));
     }
 }

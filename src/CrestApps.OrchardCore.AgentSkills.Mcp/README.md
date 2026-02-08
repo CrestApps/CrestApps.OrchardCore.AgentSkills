@@ -85,33 +85,57 @@ public sealed class MyService
 |---|---|---|
 | `IMcpResourceFileStore` | Singleton | Marker interface wrapping OrchardCore `FileSystemStore` for skill file access |
 | `McpSkillFileStore` | Singleton | Concrete implementation rooted at the skills directory |
-| `IMcpPromptProvider` | Singleton | Reads `prompts.md` → cached `McpServerPrompt` instances |
-| `IMcpResourceProvider` | Singleton | Reads `skill.yaml` + `examples/*.md` → cached `McpServerResource` instances |
+| `IMcpPromptProvider` | Singleton | Reads `SKILL.md` files → cached `McpServerPrompt` instances |
+| `IMcpResourceProvider` | Singleton | Reads `SKILL.md` + `references/*.md` files → cached `McpServerResource` instances |
 
 ### What Gets Exposed
 
 | MCP Type | Source | Description |
 |---|---|---|
-| **Prompts** | `prompts.md` files | Orchard Core prompt templates for content types, modules, recipes |
-| **Resources** | `skill.yaml` files | Skill metadata definitions with inputs/outputs |
-| **Resources** | `examples/*.md` files | Code examples for each skill category |
+| **Prompts** | `SKILL.md` files | Skill body content from Markdown files with front-matter |
+| **Resources** | `SKILL.md` files | Full skill file content (front-matter + body) |
+| **Resources** | `references/*.md` files | Additional reference documents for each skill |
 
 ### Skills Included
 
+The package includes all Orchard Core skills organized under the `orchardcore/` directory:
+
 | Skill | Description |
 |---|---|
-| `orchardcore.content-types` | Content type creation, parts, fields, and stereotypes |
-| `orchardcore.modules` | Module scaffolding, features, manifests, and startup |
-| `orchardcore.recipes` | Recipe structure, steps, and content definitions |
-| `orchardcore.deployments` | Deployment plans and import/export |
 | `orchardcore.ai` | AI service integration and MCP enablement |
+| `orchardcore.background-tasks` | Background task implementation and scheduling |
+| `orchardcore.content-fields` | Content field types and configurations |
+| `orchardcore.content-parts` | Content parts with settings and migrations |
+| `orchardcore.content-queries` | Content querying with YesSql indexes |
+| `orchardcore.content-types` | Content type creation, parts, fields, and stereotypes |
+| `orchardcore.data-migrations` | Database migrations and content type updates |
+| `orchardcore.deployments` | Deployment plans and import/export |
+| `orchardcore.display-management` | Display drivers and view models |
+| `orchardcore.graphql` | GraphQL API queries and custom types |
+| `orchardcore.liquid` | Liquid template tags and filters |
+| `orchardcore.localization` | Multi-language support and PO files |
+| `orchardcore.media` | Media library and storage configuration |
+| `orchardcore.modules` | Module scaffolding, features, and manifests |
+| `orchardcore.navigation` | Admin menus and navigation providers |
+| `orchardcore.placement` | Shape placement and alternates |
+| `orchardcore.recipes` | Recipe structure, steps, and content definitions |
+| `orchardcore.search-indexing` | Lucene/Elasticsearch search configuration |
+| `orchardcore.security` | Authentication, authorization, and security headers |
+| `orchardcore.setup` | Project creation and configuration |
+| `orchardcore.shapes` | Shape rendering and templates |
+| `orchardcore.taxonomies` | Hierarchical taxonomy management |
+| `orchardcore.tenants` | Multi-tenancy configuration |
+| `orchardcore.theming` | Theme scaffolding and layouts |
+| `orchardcore.users-roles` | User management and permissions |
+| `orchardcore.widgets` | Widget layers and placement |
+| `orchardcore.workflows` | Workflow types and custom activities |
 
 ## How It Works
 
-1. Skill files are packed into the NuGet package under `contentFiles/any/any/.agents/skills/`.
-2. NuGet copies these files into the project output directory on restore.
+1. Skill files are packed into the NuGet package under `contentFiles/any/any/.agents/skills/orchardcore/`.
+2. NuGet copies these files into the project output directory on restore (typically `bin/<config>/.agents/skills/orchardcore/`).
 3. `AddOrchardCoreSkills()` registers `IMcpResourceFileStore`, `IMcpPromptProvider`, and `IMcpResourceProvider` as singletons.
-4. At runtime, providers use OrchardCore `FileSystemStore` to read files — results are cached after the first call.
+4. At runtime, providers use OrchardCore `FileSystemStore` to read files from the output directory — results are cached after the first call.
 5. MCP clients can discover and use these prompts and resources via the MCP protocol.
 
 ## Companion Packages

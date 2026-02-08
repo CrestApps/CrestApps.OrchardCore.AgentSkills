@@ -142,7 +142,7 @@ Each skill directory may include a `references/` subdirectory containing additio
 
 | Service | Lifetime | Purpose |
 |---|---|---|
-| `ISkillFilesStore` | Singleton | Abstraction for skill file access |
+| `IAgentSkillFilesStore` | Singleton | Abstraction for skill file access |
 | `IMcpPromptProvider` | Singleton | Reads skill files → cached `McpServerPrompt` instances |
 | `IMcpResourceProvider` | Singleton | Reads skill + reference files → cached `McpServerResource` instances |
 
@@ -158,7 +158,7 @@ Each skill directory may include a `references/` subdirectory containing additio
 
 1. Place skill directories under `.agents/skills/` (or a custom path).
 2. Each skill directory contains a `SKILL.md`, `SKILL.yaml`, or `SKILL.yml` file.
-3. `AddAgentSkills()` registers `ISkillFilesStore`, `IMcpPromptProvider`, and `IMcpResourceProvider` as singletons.
+3. `AddAgentSkills()` registers `IAgentSkillFilesStore`, `IMcpPromptProvider`, and `IMcpResourceProvider` as singletons.
 4. At runtime, providers discover skill files, parse metadata, and create MCP prompts/resources.
 5. Results are cached after the first call for optimal performance.
 6. MCP clients can discover and use these prompts and resources via the MCP protocol.

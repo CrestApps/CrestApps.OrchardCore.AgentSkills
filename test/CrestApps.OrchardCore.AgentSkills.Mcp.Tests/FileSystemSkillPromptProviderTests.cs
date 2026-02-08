@@ -33,7 +33,7 @@ public sealed class FileSystemSkillPromptProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.md"),
             "---\nname: test-skill\ndescription: A test skill.\n---\n# Test Prompt\nThis is a test.");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
@@ -52,7 +52,7 @@ public sealed class FileSystemSkillPromptProviderTests : IDisposable
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(Path.Combine(skillDir, "README.md"), "# Not a skill");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
@@ -73,7 +73,7 @@ public sealed class FileSystemSkillPromptProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.md"),
             "# No front-matter\nJust regular markdown.");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
@@ -94,7 +94,7 @@ public sealed class FileSystemSkillPromptProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.md"),
             "---\nname: incomplete-skill\n---\n# Some content");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
@@ -115,7 +115,7 @@ public sealed class FileSystemSkillPromptProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.md"),
             "---\nname: cached-skill\ndescription: Cached.\n---\n# Cached");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
@@ -131,7 +131,7 @@ public sealed class FileSystemSkillPromptProviderTests : IDisposable
     public async Task GetPromptsAsync_ReturnsEmptyForEmptyDirectory()
     {
         // Arrange: empty directory, no skill subdirectories
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
@@ -150,7 +150,7 @@ public sealed class FileSystemSkillPromptProviderTests : IDisposable
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(Path.Combine(skillDir, "SKILL.md"), "   ");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 

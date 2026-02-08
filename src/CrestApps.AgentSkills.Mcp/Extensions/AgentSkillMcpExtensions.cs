@@ -15,7 +15,7 @@ public static class AgentSkillMcpExtensions
     private const string DefaultSkillsRelativePath = ".agents/skills";
 
     /// <summary>
-    /// Registers the Agent Skill services (<see cref="ISkillFilesStore"/>,
+    /// Registers the Agent Skill services (<see cref="IAgentSkillFilesStore"/>,
     /// <see cref="IMcpPromptProvider"/>, and <see cref="IMcpResourceProvider"/>)
     /// as singletons in the DI container. Does <b>not</b> eagerly load or attach them to an MCP server.
     /// The consumer is responsible for resolving providers and attaching them as needed.
@@ -28,7 +28,7 @@ public static class AgentSkillMcpExtensions
     }
 
     /// <summary>
-    /// Registers the Agent Skill services (<see cref="ISkillFilesStore"/>,
+    /// Registers the Agent Skill services (<see cref="IAgentSkillFilesStore"/>,
     /// <see cref="IMcpPromptProvider"/>, and <see cref="IMcpResourceProvider"/>)
     /// as singletons in the DI container with optional configuration.
     /// Does <b>not</b> eagerly load or attach them to an MCP server.
@@ -49,7 +49,7 @@ public static class AgentSkillMcpExtensions
         var skillsPath = options.Path
             ?? Path.Combine(AppContext.BaseDirectory, DefaultSkillsRelativePath);
 
-        services.AddSingleton<ISkillFilesStore>(new PhysicalSkillFileStore(skillsPath));
+        services.AddSingleton<IAgentSkillFilesStore>(new DefaultAgentSkillFilesStore(skillsPath));
         services.AddSingleton<IMcpPromptProvider, SkillPromptProvider>();
         services.AddSingleton<IMcpResourceProvider, SkillResourceProvider>();
 
@@ -59,7 +59,7 @@ public static class AgentSkillMcpExtensions
     /// <summary>
     /// Registers Agent Skills as MCP prompts and resources.
     /// Skills are loaded at runtime from the configured skills directory.
-    /// The <see cref="ISkillFilesStore"/>, <see cref="IMcpPromptProvider"/>,
+    /// The <see cref="IAgentSkillFilesStore"/>, <see cref="IMcpPromptProvider"/>,
     /// and <see cref="IMcpResourceProvider"/> are registered as singletons.
     /// Prompts and resources are loaded directly during configuration and registered
     /// with the MCP server builder.
@@ -99,7 +99,7 @@ public static class AgentSkillMcpExtensions
         // Load prompts/resources directly at configuration time.
         // These are temporary instances for config-time loading only;
         // the DI-registered singletons (with proper loggers) are used at runtime.
-        var fileStore = new PhysicalSkillFileStore(skillsPath);
+        var fileStore = new DefaultAgentSkillFilesStore(skillsPath);
         var promptProvider = new SkillPromptProvider(fileStore, NullLogger<SkillPromptProvider>.Instance);
         var resourceProvider = new SkillResourceProvider(fileStore, NullLogger<SkillResourceProvider>.Instance);
 

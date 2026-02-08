@@ -32,7 +32,7 @@ public sealed class SkillResourceProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.md"),
             "---\nname: test-skill\ndescription: A test skill.\n---\n# Test Skill");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillResourceProvider(
             fileStore, NullLogger<SkillResourceProvider>.Instance);
 
@@ -50,7 +50,7 @@ public sealed class SkillResourceProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.yaml"),
             "name: yaml-skill\ndescription: A YAML skill.\nbody: Some body");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillResourceProvider(
             fileStore, NullLogger<SkillResourceProvider>.Instance);
 
@@ -68,7 +68,7 @@ public sealed class SkillResourceProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.yml"),
             "name: yml-skill\ndescription: A YML skill.\nbody: Some body");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillResourceProvider(
             fileStore, NullLogger<SkillResourceProvider>.Instance);
 
@@ -91,7 +91,7 @@ public sealed class SkillResourceProviderTests : IDisposable
         await File.WriteAllTextAsync(Path.Combine(refsDir, "example1.md"), "# Example 1");
         await File.WriteAllTextAsync(Path.Combine(refsDir, "example2.md"), "# Example 2");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillResourceProvider(
             fileStore, NullLogger<SkillResourceProvider>.Instance);
 
@@ -115,7 +115,7 @@ public sealed class SkillResourceProviderTests : IDisposable
         await File.WriteAllTextAsync(Path.Combine(refsDir, "example.md"), "# Valid");
         await File.WriteAllTextAsync(Path.Combine(refsDir, "data.json"), "{}");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillResourceProvider(
             fileStore, NullLogger<SkillResourceProvider>.Instance);
 
@@ -134,7 +134,7 @@ public sealed class SkillResourceProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.md"),
             "# No front-matter\nJust markdown.");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillResourceProvider(
             fileStore, NullLogger<SkillResourceProvider>.Instance);
 
@@ -152,7 +152,7 @@ public sealed class SkillResourceProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.md"),
             "---\nname: cached-skill\ndescription: Cached.\n---\n# Cached");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillResourceProvider(
             fileStore, NullLogger<SkillResourceProvider>.Instance);
 
@@ -165,7 +165,7 @@ public sealed class SkillResourceProviderTests : IDisposable
     [Fact]
     public async Task GetResourcesAsync_ReturnsEmptyForEmptyDirectory()
     {
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillResourceProvider(
             fileStore, NullLogger<SkillResourceProvider>.Instance);
 
@@ -181,7 +181,7 @@ public sealed class SkillResourceProviderTests : IDisposable
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(Path.Combine(skillDir, "SKILL.md"), "   ");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillResourceProvider(
             fileStore, NullLogger<SkillResourceProvider>.Instance);
 

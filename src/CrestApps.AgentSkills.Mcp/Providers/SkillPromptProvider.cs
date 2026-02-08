@@ -6,7 +6,7 @@ using ModelContextProtocol.Server;
 namespace CrestApps.AgentSkills.Mcp.Providers;
 
 /// <summary>
-/// Loads skill files via <see cref="ISkillFilesStore"/>
+/// Loads skill files via <see cref="IAgentSkillFilesStore"/>
 /// and produces <see cref="McpServerPrompt"/> instances for MCP registration.
 /// Each skill file (SKILL.md, SKILL.yaml, SKILL.yml) found in a skill directory
 /// becomes a prompt (using the body content).
@@ -14,12 +14,12 @@ namespace CrestApps.AgentSkills.Mcp.Providers;
 /// </summary>
 public sealed class SkillPromptProvider : IMcpPromptProvider
 {
-    private readonly ISkillFilesStore _fileStore;
+    private readonly IAgentSkillFilesStore _fileStore;
     private readonly ILogger<SkillPromptProvider> _logger;
     private IReadOnlyList<McpServerPrompt>? _prompts;
 
     public SkillPromptProvider(
-        ISkillFilesStore fileStore,
+        IAgentSkillFilesStore fileStore,
         ILogger<SkillPromptProvider> logger)
     {
         ArgumentNullException.ThrowIfNull(fileStore);

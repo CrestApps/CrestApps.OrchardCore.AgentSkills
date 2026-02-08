@@ -32,7 +32,7 @@ public sealed class SkillPromptProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.md"),
             "---\nname: test-skill\ndescription: A test skill.\n---\n# Test Prompt\nThis is a test.");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
@@ -50,7 +50,7 @@ public sealed class SkillPromptProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.yaml"),
             "name: yaml-skill\ndescription: A YAML skill.\nbody: |\n  # YAML Prompt\n  This is a yaml test.");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
@@ -68,7 +68,7 @@ public sealed class SkillPromptProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.yml"),
             "name: yml-skill\ndescription: A YML skill.\nbody: |\n  # YML Prompt\n  This is a yml test.");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
@@ -84,7 +84,7 @@ public sealed class SkillPromptProviderTests : IDisposable
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(Path.Combine(skillDir, "README.md"), "# Not a skill");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
@@ -102,7 +102,7 @@ public sealed class SkillPromptProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.md"),
             "# No front-matter\nJust regular markdown.");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
@@ -120,7 +120,7 @@ public sealed class SkillPromptProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.yaml"),
             "name: incomplete-skill");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
@@ -138,7 +138,7 @@ public sealed class SkillPromptProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.yaml"),
             "name: no-body-skill\ndescription: A skill without body.");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
@@ -156,7 +156,7 @@ public sealed class SkillPromptProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.md"),
             "---\nname: cached-skill\ndescription: Cached.\n---\n# Cached");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
@@ -169,7 +169,7 @@ public sealed class SkillPromptProviderTests : IDisposable
     [Fact]
     public async Task GetPromptsAsync_ReturnsEmptyForEmptyDirectory()
     {
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
@@ -185,7 +185,7 @@ public sealed class SkillPromptProviderTests : IDisposable
         Directory.CreateDirectory(skillDir);
         await File.WriteAllTextAsync(Path.Combine(skillDir, "SKILL.md"), "   ");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 
@@ -207,7 +207,7 @@ public sealed class SkillPromptProviderTests : IDisposable
             Path.Combine(skillDir, "SKILL.yaml"),
             "name: yaml-skill\ndescription: From YAML.\nbody: YAML Body");
 
-        var fileStore = new PhysicalSkillFileStore(_tempDir);
+        var fileStore = new DefaultAgentSkillFilesStore(_tempDir);
         var provider = new SkillPromptProvider(
             fileStore, NullLogger<SkillPromptProvider>.Instance);
 

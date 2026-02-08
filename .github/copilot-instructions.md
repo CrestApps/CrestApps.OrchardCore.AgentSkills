@@ -7,7 +7,7 @@
 CrestApps.AgentSkills contains shared AI agent skills and MCP tooling for .NET applications and Orchard Core projects.
 
 - **Target Framework**: .NET 10 (net10.0)
-- **Skill source of truth**: `src/skills/.agents/skills/`
+- **Skill source of truth**: `src/CrestApps.AgentSkills.Skills/orchardcore/`
 - **Packages**:
   - `src/CrestApps.AgentSkills.Mcp/`
   - `src/CrestApps.OrchardCore.AgentSkills/`
@@ -28,15 +28,26 @@ dotnet test -c Release --no-build --verbosity normal
 
 ## Skill Validation
 
-Each skill directory under `src/skills/.agents/skills/` must contain a `SKILL.md` file with YAML front-matter (must include `name` and `description`). Validate locally before changes land:
+Each skill directory under `src/CrestApps.AgentSkills.Skills/orchardcore/` must contain a `SKILL.md` file with YAML front-matter (must include `name` and `description`). Validate locally before changes land:
 
+**Bash:**
 ```bash
-for dir in src/skills/.agents/skills/*/; do
+for dir in src/CrestApps.AgentSkills.Skills/orchardcore/*/; do
   name=$(basename "$dir")
   if [ ! -f "$dir/SKILL.md" ]; then echo "FAIL: $name missing SKILL.md"; fi
   if ! head -1 "$dir/SKILL.md" | grep -q "^---$"; then echo "FAIL: $name bad front-matter"; fi
   echo "OK: $name"
 done
+```
+
+**PowerShell:**
+```powershell
+Get-ChildItem -Path "src\CrestApps.AgentSkills.Skills\orchardcore" -Directory | ForEach-Object {
+    $skillFile = Join-Path $_.FullName "SKILL.md"
+    if (-not (Test-Path $skillFile)) { Write-Host "FAIL: $($_.Name) missing SKILL.md" -ForegroundColor Red }
+    elseif ((Get-Content $skillFile -First 1) -ne "---") { Write-Host "FAIL: $($_.Name) bad front-matter" -ForegroundColor Red }
+    else { Write-Host "OK: $($_.Name)" -ForegroundColor Green }
+}
 ```
 
 ## Packaging Notes
