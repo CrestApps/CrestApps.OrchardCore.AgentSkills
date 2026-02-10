@@ -15,8 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="..\CrestApps.AgentSkills.Skills\**\*"
-				 Exclude="..\CrestApps.AgentSkills.Skills\**\bin\**\*;..\CrestApps.AgentSkills.Skills\**\lib\**\*"
+		<Content Include="..\CrestApps.AgentSkills.Skills\orchardcore\**\*"
 				 Pack="true"
 				 PackagePath="contentFiles\any\any\.agents\skills"
 				 BuildAction="Content"
