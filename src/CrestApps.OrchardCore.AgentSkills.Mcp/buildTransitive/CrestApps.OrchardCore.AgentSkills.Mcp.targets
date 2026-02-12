@@ -1,0 +1,44 @@
+<Project>
+
+  <!--
+    CrestApps.OrchardCore.AgentSkills.Mcp
+    Copies agent skill files from the NuGet package into the project's output
+    .agents/skills directory at build time.
+
+    Skills are packed under skills/ in the nupkg (not contentFiles/) so that
+    NuGet does NOT auto-generate Content items that appear in Solution Explorer.
+    This target handles copying them to the output directory instead.
+
+    Timing:
+      BeforeTargets="PrepareForBuild"   — fires during CLI builds (dotnet build)
+      BeforeTargets="CompileDesignTime" — fires during VS design-time builds
+
+    Incremental: SkipUnchangedFiles prevents redundant copies on subsequent builds.
+  -->
+
+  <PropertyGroup>
+    <!-- Source: the skills/ folder inside the nupkg, sibling to buildTransitive/.
+         In the NuGet cache this resolves to:
+           ~/.nuget/packages/crestapps.orchardcore.agentskills.mcp/<version>/skills/
+    -->
+    <_McpAgentSkillsSource>$(MSBuildThisFileDirectory)..$([System.IO.Path]::DirectorySeparatorChar)skills$([System.IO.Path]::DirectorySeparatorChar)</_McpAgentSkillsSource>
+  </PropertyGroup>
+
+  <Target Name="CopyMcpAgentSkillsToOutput"
+          BeforeTargets="PrepareForBuild;CompileDesignTime"
+          Condition="Exists('$(_McpAgentSkillsSource)')">
+
+    <!-- Resolve source files at target execution time (not import time)
+         so the glob is always fresh. -->
+    <ItemGroup>
+      <_McpAgentSkillFiles Include="$(_McpAgentSkillsSource)**/*.*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(_McpAgentSkillFiles)"
+          DestinationFolder="$(OutputPath).agents$([System.IO.Path]::DirectorySeparatorChar)skills$([System.IO.Path]::DirectorySeparatorChar)%(RecursiveDir)"
+          SkipUnchangedFiles="true"
+          OverwriteReadOnlyFiles="true" />
+
+  </Target>
+
+</Project>
