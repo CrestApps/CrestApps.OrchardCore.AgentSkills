@@ -112,5 +112,5 @@ jobs:
         validate_project \
           "src/CrestApps.OrchardCore.AgentSkills.Mcp/CrestApps.OrchardCore.AgentSkills.Mcp.csproj" \
           '..\CrestApps.AgentSkills.Skills\orchardcore\**\*' \
-          'PackagePath="skills"' \
+          'PackagePath="contentFiles\any\any\.agents\skills"' \
           'Exclude="..\CrestApps.AgentSkills.Skills\orchardcore\**\bin\**\*;..\CrestApps.AgentSkills.Skills\orchardcore\**\lib\**\*"'

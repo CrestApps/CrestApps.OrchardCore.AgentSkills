@@ -14,14 +14,11 @@
 		<ProjectReference Include="..\CrestApps.AgentSkills.Mcp\CrestApps.AgentSkills.Mcp.csproj" />
 	</ItemGroup>
 
-	<!-- Pack skill files under skills/ in the nupkg (not contentFiles/) to avoid
-	     NuGet auto-linking them as Content items in Solution Explorer.
-	     The buildTransitive .targets handles copying to the output directory. -->
 	<ItemGroup>
 		<None Include="..\CrestApps.AgentSkills.Skills\orchardcore\**\*"
 			  Exclude="..\CrestApps.AgentSkills.Skills\orchardcore\**\bin\**\*;..\CrestApps.AgentSkills.Skills\orchardcore\**\lib\**\*"
 			  Pack="true"
-			  PackagePath="skills"
+			  PackagePath=".agents\skills"
 			  Visible="false" />
 	</ItemGroup>
 

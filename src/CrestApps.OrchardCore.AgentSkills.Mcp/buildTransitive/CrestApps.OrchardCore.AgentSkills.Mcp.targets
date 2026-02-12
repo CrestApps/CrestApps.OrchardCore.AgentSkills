@@ -5,7 +5,7 @@
     Copies agent skill files from the NuGet package into the project's output
     .agents/skills directory at build time.
 
-    Skills are packed under skills/ in the nupkg (not contentFiles/) so that
+    Skills are packed under .agents/skills/ in the nupkg (not contentFiles/) so that
     NuGet does NOT auto-generate Content items that appear in Solution Explorer.
     This target handles copying them to the output directory instead.
 
@@ -17,11 +17,11 @@
   -->
 
   <PropertyGroup>
-    <!-- Source: the skills/ folder inside the nupkg, sibling to buildTransitive/.
+    <!-- Source: the .agents/skills/ folder inside the nupkg, sibling to buildTransitive/.
          In the NuGet cache this resolves to:
-           ~/.nuget/packages/crestapps.orchardcore.agentskills.mcp/<version>/skills/
+           ~/.nuget/packages/crestapps.orchardcore.agentskills.mcp/<version>/.agents/skills/
     -->
-    <_McpAgentSkillsSource>$(MSBuildThisFileDirectory)..$([System.IO.Path]::DirectorySeparatorChar)skills$([System.IO.Path]::DirectorySeparatorChar)</_McpAgentSkillsSource>
+    <_McpAgentSkillsSource>$(MSBuildThisFileDirectory)..$([System.IO.Path]::DirectorySeparatorChar).agents$([System.IO.Path]::DirectorySeparatorChar)skills$([System.IO.Path]::DirectorySeparatorChar)</_McpAgentSkillsSource>
   </PropertyGroup>
 
   <Target Name="CopyMcpAgentSkillsToOutput"
