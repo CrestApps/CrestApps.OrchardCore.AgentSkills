@@ -17,7 +17,7 @@
   </ItemGroup>
   <ItemGroup>
     <!-- Logging -->
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.3" />
   </ItemGroup>
   <ItemGroup>
     <!-- Testing -->
